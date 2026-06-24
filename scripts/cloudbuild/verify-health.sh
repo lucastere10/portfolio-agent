@@ -18,13 +18,23 @@ TOKEN="$(gcloud auth print-identity-token \
   --impersonate-service-account="${WEB_SA}" \
   --audiences="${AGENT_URL}")"
 
-RESPONSE="$(curl -sf -H "Authorization: Bearer ${TOKEN}" "${AGENT_URL}/health")"
-echo "${RESPONSE}"
-
-python3 -c "
+for attempt in $(seq 1 30); do
+  if RESPONSE="$(curl -sf -H "Authorization: Bearer ${TOKEN}" "${AGENT_URL}/health")"; then
+    if python3 -c "
 import json, sys
 data = json.loads(sys.argv[1])
-assert data.get('status') == 'ok', data
-assert data.get('llm_configured') is True, data
-print('Agent health check passed')
-" "${RESPONSE}"
+sys.exit(0 if data.get('status') == 'ok' and data.get('llm_configured') is True else 1)
+" "${RESPONSE}"; then
+      echo "${RESPONSE}"
+      echo "Agent health check passed"
+      exit 0
+    fi
+    echo "Attempt ${attempt}: agent not ready yet — ${RESPONSE}"
+  else
+    echo "Attempt ${attempt}: health request failed"
+  fi
+  sleep 10
+done
+
+echo "Agent did not become healthy in time" >&2
+exit 1

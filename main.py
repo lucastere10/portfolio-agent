@@ -14,18 +14,12 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.adk.instruction import warmup_instruction_cache
-from src.adk.runtime import init_runner
 from src.api.v1 import router as v1_router
+from src.app_lifecycle import shutdown_bootstrap, start_bootstrap
 from src.config import settings
 from src.knowledge_base.indexes import build_indexes
-from src.knowledge_base.loader import load_catalog, load_persona, load_profile, load_skills
-from src.providers.factory import (
-    configure_provider_env,
-    has_llm_credentials,
-    validate_model_available,
-)
-from src.session.service import init_session_service
+from src.knowledge_base.loader import load_catalog
+from src.providers.factory import has_llm_credentials
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,46 +27,10 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Startup: load knowledge, build indexes, initialize ADK runner."""
-    configure_provider_env()
-
-    if not settings.debug and not has_llm_credentials():
-        raise RuntimeError(
-            "LLM credentials are required in production "
-            f"(provider={settings.llm_provider})"
-        )
-
-    catalog = load_catalog()
-    profile = load_profile()
-    persona = load_persona()
-    skills = load_skills()
-    indexes = build_indexes()
-    warmup_instruction_cache()
-
-    logger.info(
-        "Knowledge base loaded: %d entries (%d projects, %d labs)",
-        len(catalog),
-        indexes.project_count,
-        indexes.lab_count,
-    )
-    logger.info(
-        "Profile: %s | Persona: %s | Skills: %d technologies",
-        profile.get("name", "unknown"),
-        "loaded" if persona else "missing",
-        len(skills.get("technologies", [])),
-    )
-
-    init_session_service()
-
-    try:
-        validate_model_available()
-    except Exception as exc:
-        logger.warning("Model validation skipped or failed: %s", exc)
-
-    init_runner()
-    logger.info("Portfolio Agent ready (provider=%s)", settings.llm_provider)
-
+    """Bind HTTP port immediately; finish heavy init in the background."""
+    start_bootstrap(app)
     yield
+    await shutdown_bootstrap(app)
     logger.info("Portfolio Agent stopped")
 
 
@@ -99,6 +57,28 @@ app.include_router(v1_router, prefix="/api/v1")
 
 @app.get("/health", tags=["health"])
 async def health():
+    startup_error = getattr(app.state, "agent_startup_error", None)
+    if startup_error:
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "error",
+                "version": settings.app_version,
+                "llm_configured": False,
+                "error": startup_error,
+            },
+        )
+
+    if not getattr(app.state, "agent_ready", False):
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "starting",
+                "version": settings.app_version,
+                "llm_configured": has_llm_credentials(),
+            },
+        )
+
     catalog = load_catalog()
     indexes = build_indexes()
     llm_configured = has_llm_credentials()
