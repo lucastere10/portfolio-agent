@@ -224,7 +224,7 @@ DOCKER_BUILDKIT=1 docker build -t portfolio-agent:dev .
 
 O pipeline em `cloudbuild.yaml` executa, nesta ordem:
 
-1. Valida que o secret `portfolio-agent-gemini-api-key` existe no Secret Manager
+1. Valida que o secret `PORTFOLIO_AGENT_GEMINI_API_KEY` existe no Secret Manager
 2. Build e push da imagem (tags `latest` e `$SHORT_SHA`)
 3. Deploy no Cloud Run com `--no-allow-unauthenticated` e secret montado
 4. Concede `roles/run.invoker` à service account `portfolio-web`
@@ -244,11 +244,11 @@ gcloud iam service-accounts create portfolio-web --display-name="Portfolio Web"
 gcloud iam service-accounts create portfolio-agent --display-name="Portfolio Agent"
 
 # Secret da API Gemini
-gcloud secrets create portfolio-agent-gemini-api-key --replication-policy=automatic
-echo -n "SUA_CHAVE" | gcloud secrets versions add portfolio-agent-gemini-api-key --data-file=-
+gcloud secrets create PORTFOLIO_AGENT_GEMINI_API_KEY --replication-policy=automatic
+echo -n "SUA_CHAVE" | gcloud secrets versions add PORTFOLIO_AGENT_GEMINI_API_KEY --data-file=-
 
 # portfolio-agent SA pode ler o secret em runtime
-gcloud secrets add-iam-policy-binding portfolio-agent-gemini-api-key \
+gcloud secrets add-iam-policy-binding PORTFOLIO_AGENT_GEMINI_API_KEY \
   --member="serviceAccount:portfolio-agent@PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/secretmanager.secretAccessor"
 gcloud run services add-iam-policy-binding portfolio-agent \
@@ -322,7 +322,7 @@ gcloud run logs read portfolio-agent --region us-central1 --limit=50 --follow
 - ✅ Session service com TTL automático
 
 **Checklist antes de produção:**
-- [ ] Secret `portfolio-agent-gemini-api-key` criado no Secret Manager
+- [ ] Secret `PORTFOLIO_AGENT_GEMINI_API_KEY` criado no Secret Manager
 - [ ] Service accounts `portfolio-web` e `portfolio-agent` criadas
 - [ ] IAM `run.invoker` concedido a `portfolio-web@PROJECT_ID`
 - [ ] Cloud Build trigger configurado no push para `main`
