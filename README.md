@@ -222,21 +222,59 @@ DOCKER_BUILDKIT=1 docker build -t portfolio-agent:dev .
 
 ### Cloud Build (GCP)
 
-```bash
-# Deploy automático via Cloud Build
-gcloud builds submit --config cloudbuild.yaml .
+O pipeline em `cloudbuild.yaml` executa, nesta ordem:
 
-# Ou com substituições customizadas
-gcloud builds submit \
-  --config cloudbuild.yaml \
-  --substitutions _IMAGE_NAME=portfolio-agent,_TAG=v1.0.0 \
-  .
+1. Valida que o secret `portfolio-agent-gemini-api-key` existe no Secret Manager
+2. Build e push da imagem (tags `latest` e `$SHORT_SHA`)
+3. Deploy no Cloud Run com `--no-allow-unauthenticated` e secret montado
+4. Concede `roles/run.invoker` à service account `portfolio-web`
+5. Smoke test: impersona `portfolio-web` e valida `GET /health` (`llm_configured=true`)
+
+```bash
+gcloud builds submit --config cloudbuild.yaml .
 ```
 
+### Setup único no GCP
+
+Substitua `PROJECT_ID` pelo ID do seu projeto.
+
+```bash
+# Service accounts dedicadas
+gcloud iam service-accounts create portfolio-web --display-name="Portfolio Web"
+gcloud iam service-accounts create portfolio-agent --display-name="Portfolio Agent"
+
+# Secret da API Gemini
+gcloud secrets create portfolio-agent-gemini-api-key --replication-policy=automatic
+echo -n "SUA_CHAVE" | gcloud secrets versions add portfolio-agent-gemini-api-key --data-file=-
+
+# portfolio-agent SA pode ler o secret em runtime
+gcloud secrets add-iam-policy-binding portfolio-agent-gemini-api-key \
+  --member="serviceAccount:portfolio-agent@PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor"
+gcloud run services add-iam-policy-binding portfolio-agent \
+  --member="serviceAccount:portfolio-web@PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/run.invoker" \
+  --region=us-central1
+
+# Permissões da Cloud Build SA para impersonar portfolio-web nos smoke tests
+PROJECT_NUMBER=$(gcloud projects describe PROJECT_ID --format='value(projectNumber)')
+gcloud iam service-accounts add-iam-policy-binding \
+  portfolio-web@PROJECT_ID.iam.gserviceaccount.com \
+  --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountTokenCreator"
+```
+
+### Cloud Build Triggers (GitHub)
+
+1. **Cloud Build → Repositories** — conecte `lucastere10/portfolio-agent` (GitHub 2nd gen)
+2. Crie o trigger `deploy-portfolio-agent`:
+   - Branch: `^main$`
+   - Arquivo de build: `cloudbuild.yaml`
+3. Use a Cloud Build service account com: `run.admin`, `artifactregistry.writer`, `secretmanager.secretAccessor`, `iam.serviceAccountUser`
+
 **Fluxo no Pipeline:**
-1. Build Docker image → Artifact Registry
-2. Push → Artifact Registry (southamerica-east1)
-3. Deploy → Cloud Run com auto-scaling
+1. Validate secrets → Build → Push → Deploy → Grant IAM → Verify health
+2. Região: `us-central1`
 
 ---
 
@@ -268,7 +306,7 @@ watch -n 10 'curl -s http://localhost:8080/health | jq .'
 
 ```bash
 # Ver logs em tempo real
-gcloud run logs read portfolio-agent --region southamerica-east1 --limit=50 --follow
+gcloud run logs read portfolio-agent --region us-central1 --limit=50 --follow
 ```
 
 ---
@@ -276,18 +314,19 @@ gcloud run logs read portfolio-agent --region southamerica-east1 --limit=50 --fo
 ## 🔐 Segurança
 
 - ✅ Imagem Docker com usuário não-root (`appuser`)
-- ✅ Variáveis sensíveis via `.env` (não no Git)
-- ✅ CORS restrito a origens conhecidas
+- ✅ API keys via Secret Manager (não em env vars plain text)
+- ✅ Cloud Run IAM: apenas `portfolio-web` pode invocar o serviço
+- ✅ Fail-fast em produção se credenciais LLM ausentes
+- ✅ CORS restrito ao domínio do portfolio
+- ✅ Erros 500 sem vazamento de detalhes em produção
 - ✅ Session service com TTL automático
-- ✅ Exception handler global para erros
 
 **Checklist antes de produção:**
-- [ ] Gerar novas API keys (não reusar dev keys)
-- [ ] Configurar CORS apenas com domínios produção
-- [ ] Ativar autenticação Cloud Run se necessário
-- [ ] Revisar variáveis em `.env` (nunca commit!)
-- [ ] Testar health endpoint
-- [ ] Monitorar logs iniciais
+- [ ] Secret `portfolio-agent-gemini-api-key` criado no Secret Manager
+- [ ] Service accounts `portfolio-web` e `portfolio-agent` criadas
+- [ ] IAM `run.invoker` concedido a `portfolio-web@PROJECT_ID`
+- [ ] Cloud Build trigger configurado no push para `main`
+- [ ] Smoke test do pipeline passando (`llm_configured=true`)
 
 ---
 

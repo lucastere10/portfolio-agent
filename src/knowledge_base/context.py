@@ -8,7 +8,6 @@ from src.knowledge_base.loader import get_by_id
 
 def format_entry_details(entry: KBEntry, lang: str) -> str:
     """Compact but substantive context for a single catalog entry."""
-    item_type = "projeto" if entry.type == "project" else "lab"
     type_label = "Project" if entry.type == "project" else "Lab"
 
     lines = [
@@ -28,7 +27,7 @@ def format_entry_details(entry: KBEntry, lang: str) -> str:
     if entry.learnings:
         label = "Aprendizados:" if lang == "pt" else "Learnings:"
         lines.append(label)
-        lines.extend(f"  - {l}" for l in entry.learnings[:3])
+        lines.extend(f"  - {learning}" for learning in entry.learnings[:3])
     if entry.demonstrates:
         lines.append(f"Demonstrates: {', '.join(entry.demonstrates[:5])}")
 

@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Compile
+        run: python -m compileall -q .
+
+      - name: Import smoke test
+        env:
+          DEBUG: "true"
+        run: uv run python -c "from main import app; assert app.title"

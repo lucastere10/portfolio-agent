@@ -20,7 +20,11 @@ from src.api.v1 import router as v1_router
 from src.config import settings
 from src.knowledge_base.indexes import build_indexes
 from src.knowledge_base.loader import load_catalog, load_persona, load_profile, load_skills
-from src.providers.factory import configure_provider_env, validate_model_available
+from src.providers.factory import (
+    configure_provider_env,
+    has_llm_credentials,
+    validate_model_available,
+)
 from src.session.service import init_session_service
 
 logging.basicConfig(level=logging.INFO)
@@ -31,6 +35,12 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """Startup: load knowledge, build indexes, initialize ADK runner."""
     configure_provider_env()
+
+    if not settings.debug and not has_llm_credentials():
+        raise RuntimeError(
+            "LLM credentials are required in production "
+            f"(provider={settings.llm_provider})"
+        )
 
     catalog = load_catalog()
     profile = load_profile()
@@ -91,27 +101,28 @@ app.include_router(v1_router, prefix="/api/v1")
 async def health():
     catalog = load_catalog()
     indexes = build_indexes()
-    return {
-        "status": "ok",
+    llm_configured = has_llm_credentials()
+    body = {
+        "status": "ok" if llm_configured else "degraded",
         "version": settings.app_version,
         "catalog_size": len(catalog),
         "projects": indexes.project_count,
         "labs": indexes.lab_count,
         "provider": settings.llm_provider,
-        "llm_configured": bool(
-            settings.gemini_api_key if settings.llm_provider == "gemini"
-            else settings.openai_api_key
-        ),
+        "llm_configured": llm_configured,
     }
+    if not llm_configured:
+        return JSONResponse(status_code=503, content=body)
+    return body
 
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
     logger.exception("Unhandled error on %s: %s", request.url.path, exc)
-    return JSONResponse(
-        status_code=500,
-        content={"error": "Internal server error", "detail": str(exc)},
-    )
+    content: dict[str, str] = {"error": "Internal server error"}
+    if settings.debug:
+        content["detail"] = str(exc)
+    return JSONResponse(status_code=500, content=content)
 
 
 if __name__ == "__main__":

@@ -12,17 +12,35 @@ substitutions:
   _SESSION_TTL_SECONDS: "1800"
   _SESSION_MAX_MESSAGES: "20"
   _CORS_ORIGINS: '["https://portfolio.caldasdev.store"]'
+  _PORTFOLIO_WEB_SA: portfolio-web
+  _PORTFOLIO_AGENT_SA: portfolio-agent
+  _SECRET_NAME: portfolio-agent-gemini-api-key
 
 steps:
+  - id: validate-secrets
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - scripts/cloudbuild/validate-secrets.sh
+      - ${_SECRET_NAME}
+
   - id: Build image
     name: gcr.io/cloud-builders/docker
     args:
       - build
       - -t
+      - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:$SHORT_SHA
+      - -t
       - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
       - .
 
-  - id: Push image
+  - id: Push image sha
+    name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:$SHORT_SHA
+
+  - id: Push image latest
     name: gcr.io/cloud-builders/docker
     args:
       - push
@@ -35,10 +53,11 @@ steps:
       - run
       - deploy
       - ${_SERVICE_NAME}
-      - --image=${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+      - --image=${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:$SHORT_SHA
       - --region=${_REGION}
       - --platform=managed
       - --no-allow-unauthenticated
+      - --service-account=${_PORTFOLIO_AGENT_SA}@$PROJECT_ID.iam.gserviceaccount.com
       - --port=8080
       - --memory=1Gi
       - --cpu=1
@@ -51,6 +70,7 @@ steps:
       - --set-env-vars=SESSION_MAX_MESSAGES=${_SESSION_MAX_MESSAGES}
       - --set-env-vars=PORTFOLIO_WEB_BASE_URL=${_PORTFOLIO_WEB_BASE_URL}
       - --set-env-vars=CORS_ORIGINS=${_CORS_ORIGINS}
+      - --set-secrets=PORTFOLIO_AGENT_GEMINI_API_KEY=${_SECRET_NAME}:latest
 
   - id: Grant portfolio-web invoker access
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
@@ -61,8 +81,21 @@ steps:
       - add-iam-policy-binding
       - ${_SERVICE_NAME}
       - --region=${_REGION}
-      - --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com
+      - --member=serviceAccount:${_PORTFOLIO_WEB_SA}@$PROJECT_ID.iam.gserviceaccount.com
       - --role=roles/run.invoker
 
+  - id: verify-health
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - scripts/cloudbuild/verify-health.sh
+      - ${_SERVICE_NAME}
+      - ${_REGION}
+      - ${_PORTFOLIO_WEB_SA}@$PROJECT_ID.iam.gserviceaccount.com
+
 images:
+  - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:$SHORT_SHA
   - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY

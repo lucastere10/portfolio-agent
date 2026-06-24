@@ -6,8 +6,6 @@ from google.adk.agents import LlmAgent
 from google.adk.tools.function_tool import FunctionTool
 from google.genai import types
 
-import os
-
 from src.adk.instruction import dynamic_instruction
 from src.providers.factory import resolve_model
 from src.tools.portfolio_tools import (
