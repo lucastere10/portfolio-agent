@@ -1,0 +1,20 @@
+{
+  "name": "Lucas Caldas",
+  "headline": "Software engineer focused on backend, applied AI, cloud architecture, and MLOps.",
+  "about_en": "I design and deliver reliable production systems — focused on intelligent automation, observability, and scalable architecture. I like understanding the real problem before choosing the solution, and leaving the code simpler than I found it.",
+  "specialties": [
+    "Backend Engineering with Python, .NET/C#, and TypeScript",
+    "AI Agents and automation with ADK, Vertex AI, and MCP",
+    "Cloud Architecture on GCP with Cloud Run, BigQuery, and Pub/Sub",
+    "MLOps and data pipelines focused on reliable operations"
+  ],
+  "availability": "Available for engineering and architecture roles.",
+  "links": {
+    "about": "/about",
+    "work": "/work",
+    "contact": "/contact",
+    "linkedin": "https://linkedin.com/in/lucas-caldas50",
+    "github": "https://github.com/lucastere10",
+    "email": "lucastere10@gmail.com"
+  }
+}

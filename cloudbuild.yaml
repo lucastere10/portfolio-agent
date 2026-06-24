@@ -1,0 +1,68 @@
+substitutions:
+  _SERVICE_NAME: portfolio-agent
+  _REGION: us-central1
+  _AR_REGION: us-central1
+  _AR_REPOSITORY: portfolio-images
+  _IMAGE_NAME: portfolio-agent
+  _LLM_PROVIDER: gemini
+  _PORTFOLIO_AGENT_GEMINI_MODEL: gemini-2.5-flash
+  _PORTFOLIO_WEB_BASE_URL: https://portfolio.caldasdev.store
+  _APP_VERSION: 0.1.0
+  _DEBUG: "false"
+  _SESSION_TTL_SECONDS: "1800"
+  _SESSION_MAX_MESSAGES: "20"
+  _CORS_ORIGINS: '["https://portfolio.caldasdev.store"]'
+
+steps:
+  - id: Build image
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+      - .
+
+  - id: Push image
+    name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+
+  - id: Deploy to Cloud Run
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE_NAME}
+      - --image=${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+      - --region=${_REGION}
+      - --platform=managed
+      - --no-allow-unauthenticated
+      - --port=8080
+      - --memory=1Gi
+      - --cpu=1
+      - --timeout=300
+      - --set-env-vars=LLM_PROVIDER=${_LLM_PROVIDER}
+      - --set-env-vars=PORTFOLIO_AGENT_GEMINI_MODEL=${_PORTFOLIO_AGENT_GEMINI_MODEL}
+      - --set-env-vars=APP_VERSION=${_APP_VERSION}
+      - --set-env-vars=DEBUG=${_DEBUG}
+      - --set-env-vars=SESSION_TTL_SECONDS=${_SESSION_TTL_SECONDS}
+      - --set-env-vars=SESSION_MAX_MESSAGES=${_SESSION_MAX_MESSAGES}
+      - --set-env-vars=PORTFOLIO_WEB_BASE_URL=${_PORTFOLIO_WEB_BASE_URL}
+      - --set-env-vars=CORS_ORIGINS=${_CORS_ORIGINS}
+
+  - id: Grant portfolio-web invoker access
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - services
+      - add-iam-policy-binding
+      - ${_SERVICE_NAME}
+      - --region=${_REGION}
+      - --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com
+      - --role=roles/run.invoker
+
+images:
+  - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
