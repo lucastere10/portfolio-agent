@@ -33,6 +33,6 @@ def create_portfolio_agent() -> LlmAgent:
         ],
         generate_content_config=types.GenerateContentConfig(
             temperature=0.45,
-            max_output_tokens=700,
+            max_output_tokens=400,
         ),
     )
