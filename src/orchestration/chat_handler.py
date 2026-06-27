@@ -8,6 +8,7 @@ the conversational reply to the ADK agent with rich portfolio context.
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import re
 import time
@@ -216,7 +217,20 @@ async def handle_chat(request: ChatRequest) -> ChatResponse:
         tool_used = "no_api_key"
 
     total_ms = int((time.monotonic() - t_start) * 1000)
-    logger.info("handle_chat: %dms tool=%s session=%s", total_ms, tool_used, session_id[:8])
+    logger.info(
+        json.dumps({
+            "event": "chat_turn",
+            "session_id": session_id[:8],
+            "lang": lang,
+            "query_len": len(raw_query),
+            "query_preview": raw_query[:120],
+            "response_len": len(response_text),
+            "tool_used": tool_used,
+            "match_ids": [m.id for m in ordered[:3]],
+            "selected_project": primary_id,
+            "latency_ms": total_ms,
+        })
+    )
 
     return ChatResponse(
         message=response_text,
