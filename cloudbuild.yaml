@@ -84,7 +84,7 @@ steps:
       - --set-env-vars=SESSION_MAX_MESSAGES=${_SESSION_MAX_MESSAGES}
       - --set-env-vars=PORTFOLIO_WEB_BASE_URL=${_PORTFOLIO_WEB_BASE_URL}
       - --set-env-vars=CORS_ORIGINS=${_CORS_ORIGINS}
-      - --set-secrets=PORTFOLIO_AGENT_GEMINI_API_KEY=${_SECRET_GEMINI_API_KEY}:latest
+      - "--set-secrets=PORTFOLIO_AGENT_GEMINI_API_KEY=${_SECRET_GEMINI_API_KEY}:latest"
 
   - id: grant-web-invoker
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
@@ -113,5 +113,6 @@ images:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
 
 serviceAccount: projects/${PROJECT_ID}/serviceAccounts/cloud-build-sa@${PROJECT_ID}.iam.gserviceaccount.com
