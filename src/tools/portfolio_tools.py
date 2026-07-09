@@ -10,7 +10,7 @@ from src.tools.search import generate_learning_path, get_project, search_project
 def search_portfolio(
     query: str,
     limit: int = 5,
-    filter_type: Literal["all", "project", "lab"] = "all",
+    filter_type: Literal["all", "project", "lab", "personal_project"] = "all",
 ) -> list[dict]:
     """
     Search portfolio projects and labs by natural language query.
@@ -18,7 +18,7 @@ def search_portfolio(
     Args:
         query: What the visitor is looking for (technology, domain, challenge).
         limit: Maximum number of results (default 5).
-        filter_type: Filter by "project", "lab", or "all".
+        filter_type: Filter by "project", "lab", "personal_project", or "all".
 
     Returns:
         Ranked matches with id, type, title, score, and slug.

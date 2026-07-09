@@ -17,7 +17,7 @@ _DATA_DIR = Path(__file__).resolve().parent / "data"
 def load_catalog() -> dict[str, KBEntry]:
     """Load all projects and labs indexed by ID."""
     entries: dict[str, KBEntry] = {}
-    for fname in ("projects.json", "labs.json"):
+    for fname in ("projects.json", "labs.json", "personal_projects.json"):
         path = _DATA_DIR / fname
         raw = json.loads(path.read_text(encoding="utf-8"))
         for item in raw:

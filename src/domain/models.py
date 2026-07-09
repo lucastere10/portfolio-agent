@@ -12,7 +12,7 @@ class Metric(BaseModel):
 
 class KBEntry(BaseModel):
     id: str
-    type: Literal["project", "lab"]
+    type: Literal["project", "lab", "personal_project"]
     title: str
     domain: str
     summary: str
@@ -30,6 +30,9 @@ class KBEntry(BaseModel):
     metrics: list[Metric] = Field(default_factory=list)
     demonstrates: list[str] = Field(default_factory=list)
     interaction_prompt: str = ""
+    demo_url: str = ""
+    github_url: str = ""
+    repo_url: str = ""
 
 
 class ChatMessage(BaseModel):
@@ -45,7 +48,7 @@ class ChatRequest(BaseModel):
 
 class ProjectMatch(BaseModel):
     id: str
-    type: Literal["project", "lab"]
+    type: Literal["project", "lab", "personal_project"]
     title: str
     score: float
     slug: str
@@ -54,7 +57,7 @@ class ProjectMatch(BaseModel):
 class ChatResponse(BaseModel):
     message: str
     selected_project: str | None
-    selected_type: Literal["project", "lab"] | None
+    selected_type: Literal["project", "lab", "personal_project"] | None
     matches: list[ProjectMatch]
     session_id: str
     tool_used: str
@@ -63,7 +66,7 @@ class ChatResponse(BaseModel):
 class SearchRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=500)
     limit: int = Field(default=5, ge=1, le=20)
-    filter_type: Literal["project", "lab", "all"] = "all"
+    filter_type: Literal["project", "lab", "personal_project", "all"] = "all"
 
 
 class SearchResponse(BaseModel):
@@ -74,7 +77,7 @@ class SearchResponse(BaseModel):
 
 class ProjectDetail(BaseModel):
     id: str
-    type: Literal["project", "lab"]
+    type: Literal["project", "lab", "personal_project"]
     title: str
     domain: str
     summary: str
@@ -92,6 +95,9 @@ class ProjectDetail(BaseModel):
     metrics: list[Metric]
     demonstrates: list[str]
     interaction_prompt: str
+    demo_url: str = ""
+    github_url: str = ""
+    repo_url: str = ""
 
 
 class ErrorResponse(BaseModel):
