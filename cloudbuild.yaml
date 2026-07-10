@@ -75,7 +75,6 @@ steps:
       - --revision-suffix=${SHORT_SHA}
       - --labels=app=${_LABEL_APP},env=${_LABEL_ENV},owner=${_LABEL_OWNER}
       - --execution-environment=gen2
-      - --startup-probe=http-get-path=/health,http-get-port=8080,initial-delay-seconds=5,timeout-seconds=5,period-seconds=10,failure-threshold=30
       - --set-env-vars=LLM_PROVIDER=${_LLM_PROVIDER}
       - --set-env-vars=PORTFOLIO_AGENT_GEMINI_MODEL=${_PORTFOLIO_AGENT_GEMINI_MODEL}
       - --set-env-vars=APP_VERSION=${_APP_VERSION}
