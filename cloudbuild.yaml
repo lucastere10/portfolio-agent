@@ -5,7 +5,7 @@ substitutions:
   _AR_REPO: portfolio-images
   _SERVICE_NAME: portfolio-agent
   _RUNTIME_SA: portfolio-sa
-  _WEB_RUNTIME_SA: portfolio-web
+  _WEB_RUNTIME_SA: portfolio-sa
   _IMAGE: ${_AR_HOSTNAME}/${PROJECT_ID}/${_AR_REPO}/${_SERVICE_NAME}
   _CONCURRENCY: "80"
   _LABEL_APP: portfolio
