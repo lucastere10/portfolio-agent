@@ -64,7 +64,7 @@
       "Artificial life"
     ],
     "interaction_prompt": "Try live demo",
-    "demo_url": "https://quark.caldasdev.store/",
+    "demo_url": "https://quark.caldasdev.com.br/",
     "github_url": "https://github.com/lucastere10/quark-web",
     "repo_url": ""
   },
@@ -143,7 +143,7 @@
       "Cloud Tasks async processing"
     ],
     "interaction_prompt": "Try live demo",
-    "demo_url": "https://passanota.caldasdev.store/",
+    "demo_url": "https://passanota.caldasdev.com.br/",
     "github_url": "https://github.com/lucastere10/passanota-web",
     "repo_url": "https://github.com/lucastere10/passanota-api"
   },
@@ -231,7 +231,7 @@
       "Credit-based quotas"
     ],
     "interaction_prompt": "Try live demo",
-    "demo_url": "https://drop.caldasdev.store/",
+    "demo_url": "https://drop.caldasdev.com.br/",
     "github_url": "https://github.com/lucastere10/drop-frontend",
     "repo_url": "https://github.com/lucastere10/drop-api"
   },
