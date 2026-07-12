@@ -14,13 +14,21 @@ import time
 import uuid
 from typing import Optional
 
+from src.observability.logging import log_event, session_hash
+
 from src.adk.runtime import run_agent_turn
 from src.config import settings
 from src.domain.models import ChatRequest, ChatResponse, ProjectMatch
-from src.knowledge_base.context import build_matches_context
+from src.knowledge_base.context import build_matches_context, build_overview_context
 from src.providers.factory import has_llm_credentials
 from src.session.service import get_session_store
-from src.tools.search import generate_learning_path, search_projects
+from src.tools.search import (
+    _wants_personal_overview,
+    generate_learning_path,
+    get_portfolio_overview_matches,
+    is_portfolio_browse_query,
+    search_projects,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +59,17 @@ _LEARNING_HINTS = {
 
 _PROJECT_HINTS = ("projeto", "projetos", "project", "projects", "case", "work", "portfolio")
 _LAB_HINTS = ("lab", "labs", "demo", "simulador", "simulator", "explore", "explorer")
+_PERSONAL_HINTS = (
+    "quark", "passanota", "drop", "pessoal", "personal", "open-source", "open source", "side project",
+    "side-project", "artificial life", "vida artificial", "neuroevolution",
+    "neuroevolução", "neuroevolucao", "simulation", "simulação", "simulacao",
+    "genetic", "genética", "genetica", "evolution", "evolução", "evolucao",
+    "pixijs", "emergent", "emergente", "nota fiscal", "receipt", "receipts",
+    "expense", "expenses", "fintech", "cupom", "nf-e", "nota-fiscal",
+    "dados", "spreadsheet", "csv", "analytics", "dashboard", "insights", "planilha",
+    "newsletter", "knowledgehub", "rss", "curation", "curadoria", "personalization",
+    "personalizado", "recommendation", "recomendação", "recomendacao",
+)
 
 _FOLLOW_UP_MARKERS = (
     "e sobre", "e o", "e a", "esse", "essa", "isso", "desse", "deste", "desta",
@@ -83,6 +102,8 @@ def _wants_learning_path(query: str) -> bool:
 
 def _preferred_match_type(query: str) -> Optional[str]:
     lowered = query.lower()
+    if any(h in lowered for h in _PERSONAL_HINTS):
+        return "personal_project"
     if any(h in lowered for h in _LAB_HINTS):
         return "lab"
     if any(h in lowered for h in _PROJECT_HINTS):
@@ -155,7 +176,18 @@ async def _fetch_matches(query: str, limit: int, learning: bool) -> tuple[list[P
     if learning:
         results = await asyncio.to_thread(generate_learning_path, query, limit)
         return results, "generate_learning_path"
+    if is_portfolio_browse_query(query):
+        personal_only = _wants_personal_overview(query)
+        results = await asyncio.to_thread(
+            get_portfolio_overview_matches, limit, personal_only=personal_only
+        )
+        return results, "portfolio_overview"
     results = await asyncio.to_thread(search_projects, query, limit, "all")
+    if not results and any(h in query.lower() for h in _PROJECT_HINTS):
+        results = await asyncio.to_thread(
+            get_portfolio_overview_matches, limit, personal_only=True
+        )
+        return results, "portfolio_overview_fallback"
     return results, "search_projects"
 
 
@@ -192,7 +224,10 @@ async def handle_chat(request: ChatRequest) -> ChatResponse:
         else matches
     )
     primary_id = primary.id if primary else None
-    matches_context = build_matches_context(ordered, lang, primary_id)
+    if tool_used.startswith("portfolio_overview"):
+        matches_context = build_overview_context(ordered, lang, primary_id)
+    else:
+        matches_context = build_matches_context(ordered, lang, primary_id)
 
     state_delta = {
         "response_lang": lang,
@@ -209,6 +244,13 @@ async def handle_chat(request: ChatRequest) -> ChatResponse:
             tool_used = "adk_agent"
         except Exception as exc:
             logger.exception("ADK agent failed for session %s: %s", session_id[:8], exc)
+            log_event(
+                "chat_error",
+                session_id=session_hash(session_id),
+                error_type=type(exc).__name__,
+                lang=lang,
+                query_preview=raw_query[:120],
+            )
             response_text = _minimal_fallback(lang, primary)
             tool_used = "llm_error_fallback"
     else:
@@ -216,7 +258,20 @@ async def handle_chat(request: ChatRequest) -> ChatResponse:
         tool_used = "no_api_key"
 
     total_ms = int((time.monotonic() - t_start) * 1000)
-    logger.info("handle_chat: %dms tool=%s session=%s", total_ms, tool_used, session_id[:8])
+    log_event(
+        "chat_turn",
+        session_id=session_hash(session_id),
+        lang=lang,
+        query_len=len(raw_query),
+        query_preview=raw_query[:120],
+        response_len=len(response_text),
+        response_preview=response_text[:120],
+        tool_used=tool_used,
+        match_ids=[m.id for m in ordered[:3]],
+        match_count=len(ordered),
+        selected_project=primary_id,
+        latency_ms=total_ms,
+    )
 
     return ChatResponse(
         message=response_text,

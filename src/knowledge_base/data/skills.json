@@ -7,7 +7,11 @@
     "Payment Systems",
     "MLOps & Data Pipelines",
     "Computer Vision",
-    "CI/CD & Reliability"
+    "CI/CD & Reliability",
+    "Artificial Life & Simulation",
+    "FinTech / Expense Management",
+    "Data Analytics / AI",
+    "Personalized AI & Technology Intelligence"
   ],
   "technologies": [
     "Python",
@@ -32,7 +36,26 @@
     "REST APIs",
     "Webhooks",
     "mTLS",
-    "PIX"
+    "PIX",
+    "PixiJS",
+    "Zustand",
+    "React Flow",
+    "Genetic Algorithms",
+    "Neuroevolution",
+    "Supabase",
+    "pgvector",
+    "Cloud Tasks",
+    "Django",
+    "DRF",
+    "pandas",
+    "Gemini",
+    "GCS",
+    "react-grid-layout",
+    "Prisma",
+    "Redis",
+    "Resend",
+    "Turborepo",
+    "feedparser"
   ],
   "frameworks_and_tools": [
     "Google ADK",
@@ -40,6 +63,8 @@
     "OpenAI API",
     "ASP.NET Core",
     "Next.js",
-    "Sentence Transformers"
+    "Sentence Transformers",
+    "Django REST Framework",
+    "Prisma ORM"
   ]
 }

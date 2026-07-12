@@ -8,8 +8,12 @@ from src.knowledge_base.loader import get_by_id
 
 def format_entry_details(entry: KBEntry, lang: str) -> str:
     """Compact but substantive context for a single catalog entry."""
-    item_type = "projeto" if entry.type == "project" else "lab"
-    type_label = "Project" if entry.type == "project" else "Lab"
+    if entry.type == "personal_project":
+        type_label = "Projeto pessoal" if lang == "pt" else "Personal project"
+    elif entry.type == "project":
+        type_label = "Projeto profissional" if lang == "pt" else "Work project"
+    else:
+        type_label = "Lab"
 
     lines = [
         f"[{type_label}] {entry.title} (id: {entry.id})",
@@ -28,7 +32,7 @@ def format_entry_details(entry: KBEntry, lang: str) -> str:
     if entry.learnings:
         label = "Aprendizados:" if lang == "pt" else "Learnings:"
         lines.append(label)
-        lines.extend(f"  - {l}" for l in entry.learnings[:3])
+        lines.extend(f"  - {learning}" for learning in entry.learnings[:3])
     if entry.demonstrates:
         lines.append(f"Demonstrates: {', '.join(entry.demonstrates[:5])}")
 
@@ -57,6 +61,26 @@ def build_matches_context(
         sections.append(f"{marker}\n{format_entry_details(entry, lang)}")
 
     return "\n\n".join(sections)
+
+
+def build_overview_context(
+    matches: list[ProjectMatch],
+    lang: str,
+    primary_id: str | None,
+) -> str:
+    """Context for portfolio browse queries — agent must present all matches."""
+    if lang == "pt":
+        header = (
+            "O usuário pediu uma visão geral do portfólio. Apresente TODOS os projetos "
+            "listados abaixo com um resumo de cada um. NÃO diga que nenhum projeto foi encontrado."
+        )
+    else:
+        header = (
+            "The user asked for a portfolio overview. Present ALL projects listed below "
+            "with a summary of each. Do NOT say that no projects were found."
+        )
+    body = build_matches_context(matches, lang, primary_id)
+    return f"{header}\n\n{body}"
 
 
 def build_profile_context(lang: str) -> str:

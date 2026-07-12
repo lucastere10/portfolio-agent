@@ -1,9 +1,21 @@
 substitutions:
+  # Infra
+  _AR_HOSTNAME: us-central1-docker.pkg.dev
+  _DEPLOY_REGION: us-central1
+  _AR_REPO: portfolio-images
   _SERVICE_NAME: portfolio-agent
-  _REGION: us-central1
-  _AR_REGION: us-central1
-  _AR_REPOSITORY: portfolio-images
-  _IMAGE_NAME: portfolio-agent
+  _RUNTIME_SA: portfolio-sa
+  _WEB_RUNTIME_SA: portfolio-sa
+  _IMAGE: ${_AR_HOSTNAME}/${PROJECT_ID}/${_AR_REPO}/${_SERVICE_NAME}
+  _CONCURRENCY: "80"
+  _LABEL_APP: portfolio
+  _LABEL_ENV: production
+  _LABEL_OWNER: lucas
+
+  # Secrets
+  _SECRET_GEMINI_API_KEY: portfolio-gemini-api-key
+
+  # Application
   _LLM_PROVIDER: gemini
   _PORTFOLIO_AGENT_GEMINI_MODEL: gemini-2.5-flash
   _PORTFOLIO_WEB_BASE_URL: https://portfolio.caldasdev.store
@@ -14,35 +26,55 @@ substitutions:
   _CORS_ORIGINS: '["https://portfolio.caldasdev.store"]'
 
 steps:
-  - id: Build image
+  - id: validate-secrets
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - scripts/cloudbuild/validate-secrets.sh
+      - ${_SECRET_GEMINI_API_KEY}
+
+  - id: Build
     name: gcr.io/cloud-builders/docker
     args:
       - build
       - -t
-      - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+      - ${_IMAGE}:${COMMIT_SHA}
+      - -t
+      - ${_IMAGE}:latest
       - .
 
-  - id: Push image
+  - id: Push
     name: gcr.io/cloud-builders/docker
+    entrypoint: bash
     args:
-      - push
-      - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+      - -ceu
+      - |
+        docker push "${_IMAGE}:${COMMIT_SHA}"
+        docker push "${_IMAGE}:latest"
 
-  - id: Deploy to Cloud Run
+  - id: Deploy
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
     entrypoint: gcloud
     args:
       - run
       - deploy
       - ${_SERVICE_NAME}
-      - --image=${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
-      - --region=${_REGION}
+      - --image=${_IMAGE}:${COMMIT_SHA}
+      - --region=${_DEPLOY_REGION}
       - --platform=managed
       - --no-allow-unauthenticated
+      - --service-account=${_RUNTIME_SA}@${PROJECT_ID}.iam.gserviceaccount.com
       - --port=8080
       - --memory=1Gi
       - --cpu=1
       - --timeout=300
+      - --min-instances=0
+      - --max-instances=10
+      - --cpu-boost
+      - --concurrency=${_CONCURRENCY}
+      - --revision-suffix=${SHORT_SHA}
+      - --labels=app=${_LABEL_APP},env=${_LABEL_ENV},owner=${_LABEL_OWNER}
+      - --execution-environment=gen2
       - --set-env-vars=LLM_PROVIDER=${_LLM_PROVIDER}
       - --set-env-vars=PORTFOLIO_AGENT_GEMINI_MODEL=${_PORTFOLIO_AGENT_GEMINI_MODEL}
       - --set-env-vars=APP_VERSION=${_APP_VERSION}
@@ -51,8 +83,9 @@ steps:
       - --set-env-vars=SESSION_MAX_MESSAGES=${_SESSION_MAX_MESSAGES}
       - --set-env-vars=PORTFOLIO_WEB_BASE_URL=${_PORTFOLIO_WEB_BASE_URL}
       - --set-env-vars=CORS_ORIGINS=${_CORS_ORIGINS}
+      - "--set-secrets=PORTFOLIO_AGENT_GEMINI_API_KEY=${_SECRET_GEMINI_API_KEY}:latest"
 
-  - id: Grant portfolio-web invoker access
+  - id: grant-web-invoker
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
     entrypoint: gcloud
     args:
@@ -60,9 +93,25 @@ steps:
       - services
       - add-iam-policy-binding
       - ${_SERVICE_NAME}
-      - --region=${_REGION}
-      - --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com
+      - --region=${_DEPLOY_REGION}
+      - --member=serviceAccount:${_WEB_RUNTIME_SA}@${PROJECT_ID}.iam.gserviceaccount.com
       - --role=roles/run.invoker
 
+  - id: verify-health
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - scripts/cloudbuild/verify-health.sh
+      - ${_SERVICE_NAME}
+      - ${_DEPLOY_REGION}
+      - ${_WEB_RUNTIME_SA}@${PROJECT_ID}.iam.gserviceaccount.com
+
 images:
-  - ${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+  - ${_IMAGE}:${COMMIT_SHA}
+  - ${_IMAGE}:latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+
+serviceAccount: projects/${PROJECT_ID}/serviceAccounts/cloud-build-sa@${PROJECT_ID}.iam.gserviceaccount.com
