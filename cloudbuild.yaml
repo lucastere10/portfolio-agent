@@ -4,8 +4,8 @@ substitutions:
   _DEPLOY_REGION: us-central1
   _AR_REPO: portfolio-images
   _SERVICE_NAME: portfolio-agent
-  _RUNTIME_SA: portfolio-agent
-  _WEB_RUNTIME_SA: portfolio-web
+  _RUNTIME_SA: portfolio-sa
+  _WEB_RUNTIME_SA: portfolio-sa
   _IMAGE: ${_AR_HOSTNAME}/${PROJECT_ID}/${_AR_REPO}/${_SERVICE_NAME}
   _CONCURRENCY: "80"
   _LABEL_APP: portfolio
@@ -75,7 +75,6 @@ steps:
       - --revision-suffix=${SHORT_SHA}
       - --labels=app=${_LABEL_APP},env=${_LABEL_ENV},owner=${_LABEL_OWNER}
       - --execution-environment=gen2
-      - --startup-probe=http-get-path=/health,http-get-port=8080,initial-delay-seconds=5,timeout-seconds=5,period-seconds=10,failure-threshold=30
       - --set-env-vars=LLM_PROVIDER=${_LLM_PROVIDER}
       - --set-env-vars=PORTFOLIO_AGENT_GEMINI_MODEL=${_PORTFOLIO_AGENT_GEMINI_MODEL}
       - --set-env-vars=APP_VERSION=${_APP_VERSION}
@@ -84,7 +83,7 @@ steps:
       - --set-env-vars=SESSION_MAX_MESSAGES=${_SESSION_MAX_MESSAGES}
       - --set-env-vars=PORTFOLIO_WEB_BASE_URL=${_PORTFOLIO_WEB_BASE_URL}
       - --set-env-vars=CORS_ORIGINS=${_CORS_ORIGINS}
-      - --set-secrets=PORTFOLIO_AGENT_GEMINI_API_KEY=${_SECRET_GEMINI_API_KEY}:latest
+      - "--set-secrets=PORTFOLIO_AGENT_GEMINI_API_KEY=${_SECRET_GEMINI_API_KEY}:latest"
 
   - id: grant-web-invoker
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
@@ -113,5 +112,6 @@ images:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
 
 serviceAccount: projects/${PROJECT_ID}/serviceAccounts/cloud-build-sa@${PROJECT_ID}.iam.gserviceaccount.com
