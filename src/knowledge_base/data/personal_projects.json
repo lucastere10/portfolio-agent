@@ -1,5 +1,113 @@
 [
   {
+    "id": "astra",
+    "type": "personal_project",
+    "title": "Astra",
+    "domain": "Personalized AI & Technology Intelligence",
+    "summary": "Astra ranks technology signal to your interests and delivers it as a personalized newsletter — intelligence first, inbox second. A Python collector continuously ingests articles from curated RSS, scrapers, and optional Exa sources, then enriches them with AI (summaries, topics, keywords, embeddings, quality scores) and deduplicates near-duplicates. A composite recommendation engine ranks content per user from topic affinity, engagement, freshness, diversity, and global quality — without relying solely on LLM prompts. Users get Astra Daily or Weekly digests via Resend, with open/click tracking feeding ranking.",
+    "slug": "/projects/astra",
+    "technologies": [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Tailwind CSS 4",
+      "shadcn/ui",
+      "Prisma",
+      "Supabase",
+      "PostgreSQL",
+      "Redis",
+      "Python",
+      "OpenAI",
+      "Resend",
+      "Turborepo",
+      "Cloud Run"
+    ],
+    "tags": [
+      "ai",
+      "astra",
+      "cloud-run",
+      "intelligence",
+      "next-js",
+      "next-js-16",
+      "openai",
+      "personalized",
+      "postgresql",
+      "prisma",
+      "python",
+      "react",
+      "react-19",
+      "redis",
+      "resend",
+      "shadcn-ui",
+      "supabase",
+      "tailwind-css",
+      "tailwind-css-4",
+      "technology",
+      "turborepo",
+      "typescript"
+    ],
+    "categories": [
+      "Personalized AI & Technology Intelligence",
+      "Personal Projects"
+    ],
+    "difficulty": "intermediate",
+    "featured": true,
+    "related_projects": [
+      "drop",
+      "passanota",
+      "quark"
+    ],
+    "tagline": "Personalized AI & technology intelligence, delivered Daily or Weekly.",
+    "context": "Astra ranks technology signal to your interests and delivers it as a personalized newsletter — intelligence first, inbox second. A Python collector continuously ingests articles from curated RSS, scrapers, and optional Exa sources, then enriches them with AI (summaries, topics, keywords, embeddings, quality scores) and deduplicates near-duplicates. A composite recommendation engine ranks content per user from topic affinity, engagement, freshness, diversity, and global quality — without relying solely on LLM prompts. Users get Astra Daily or Weekly digests via Resend, with open/click tracking feeding ranking.",
+    "challenges": [
+      "Python collector decoupled from Next.js, sharing a Prisma/Supabase PostgreSQL schema via SQLAlchemy",
+      "5-signal composite ranking (quality, topic affinity, engagement, freshness, diversity) with optional Redis cache",
+      "Pipeline: collect → enrich → embed → dedup → score → deliver (Daily/Weekly cadences)",
+      "Production on GCP Cloud Run — astra-web, astra-collect, astra-deliver — with Cloud Scheduler"
+    ],
+    "learnings": [
+      "Composite scoring beats prompt-only personalization for explainability, cost control, and tunable ranking",
+      "Shared scoring primitives in `@workspace/shared` keep the web app and Python worker conceptually aligned",
+      "Separating collect and deliver as Cloud Run jobs makes the intelligence pipeline operable without coupling to the web tier"
+    ],
+    "metrics": [
+      {
+        "label": "Cloud Run services",
+        "value": "3"
+      },
+      {
+        "label": "Topic categories",
+        "value": "11"
+      },
+      {
+        "label": "Cadences",
+        "value": "Daily + Weekly"
+      },
+      {
+        "label": "Ranking signals",
+        "value": "5"
+      }
+    ],
+    "demonstrates": [
+      "SaaS landing with sample newsletter preview, how-it-works, and onboarding",
+      "Magic-link authentication and weighted topic preferences across 11 categories",
+      "RSS, scraper, and optional Exa collection with AI enrichment and heuristic fallbacks",
+      "Embeddings-based near-duplicate detection plus URL/title fallbacks",
+      "Personalized digests (Astra Daily / Astra Weekly) with HTML email and engagement tracking",
+      "Admin console for sources, articles, worker runs, newsletters, and analytics",
+      "Domain modules for auth, preferences, recommendation, newsletter, analytics, and unsubscribe",
+      "Turborepo monorepo with shared scoring and branding primitives across TypeScript and Python"
+    ],
+    "decisions": [],
+    "tradeoffs": "",
+    "implementation": "Turborepo monorepo: `apps/web` (Next.js 16 App Router), `workers/collector` (Python feedparser + BeautifulSoup + OpenAI writing via SQLAlchemy to the Prisma schema), and packages for database, shared scoring/topics/branding, and shadcn/ui. Ranking blends five weighted signals in TypeScript; the collector enriches and embeds offline when OpenAI is unavailable. Production deploys three Cloud Run services with Cloud Scheduler driving collect and deliver.",
+    "narrative": [],
+    "interaction_prompt": "",
+    "demo_url": "https://astra.caldasdev.com.br",
+    "github_url": "",
+    "repo_url": ""
+  },
+  {
     "id": "drop",
     "type": "personal_project",
     "title": "Drop",
@@ -112,111 +220,6 @@
     "demo_url": "https://drop.caldasdev.com.br/",
     "github_url": "https://github.com/lucastere10/drop-frontend",
     "repo_url": "https://github.com/lucastere10/drop-api"
-  },
-  {
-    "id": "newsletter",
-    "type": "personal_project",
-    "title": "KnowledgeHub",
-    "domain": "Personalized AI & Technology Intelligence",
-    "summary": "KnowledgeHub is a personalized technology intelligence platform — not simply a newsletter. A Python collector worker continuously ingests articles from curated RSS sources and scrapers, enriches them with AI (summaries, topics, keywords, embeddings, quality scores), and stores them in a shared PostgreSQL database. A composite recommendation engine ranks content per user from topic weights, engagement, freshness, and diversity — without relying solely on LLM prompts. Users receive beautifully formatted, tracked weekly editions via email.",
-    "slug": "/projects/newsletter",
-    "technologies": [
-      "Next.js 16",
-      "React 19",
-      "TypeScript",
-      "Tailwind CSS 4",
-      "shadcn/ui",
-      "Prisma",
-      "PostgreSQL",
-      "Redis",
-      "Python",
-      "OpenAI",
-      "Resend",
-      "Turborepo",
-      "Docker"
-    ],
-    "tags": [
-      "ai",
-      "docker",
-      "intelligence",
-      "newsletter",
-      "next-js",
-      "next-js-16",
-      "openai",
-      "personalized",
-      "postgresql",
-      "prisma",
-      "python",
-      "react",
-      "react-19",
-      "redis",
-      "resend",
-      "shadcn-ui",
-      "tailwind-css",
-      "tailwind-css-4",
-      "technology",
-      "turborepo",
-      "typescript"
-    ],
-    "categories": [
-      "Personalized AI & Technology Intelligence",
-      "Personal Projects"
-    ],
-    "difficulty": "advanced",
-    "featured": true,
-    "related_projects": [
-      "multi-agent-explorer",
-      "ai-agents-adk"
-    ],
-    "tagline": "Personalized AI & technology intelligence, delivered weekly.",
-    "context": "KnowledgeHub is a personalized technology intelligence platform — not simply a newsletter. A Python collector worker continuously ingests articles from curated RSS sources and scrapers, enriches them with AI (summaries, topics, keywords, embeddings, quality scores), and stores them in a shared PostgreSQL database. A composite recommendation engine ranks content per user from topic weights, engagement, freshness, and diversity — without relying solely on LLM prompts. Users receive beautifully formatted, tracked weekly editions via email.",
-    "challenges": [
-      "Python collector worker decoupled from Next.js, sharing a Prisma-managed PostgreSQL schema",
-      "5-signal composite recommendation engine (quality, affinity, engagement, freshness, diversity) with Redis caching",
-      "Offline-capable ingestion pipeline with OpenAI enrichment and heuristic fallbacks when keys are absent",
-      "Full admin dashboard for sources, articles, worker runs, newsletters, and analytics"
-    ],
-    "learnings": [
-      "Composite scoring beats prompt-only personalization for explainability, cost control, and tunable ranking",
-      "Optional Redis, OpenAI, and Resend degrade gracefully — the full stack runs locally without external services",
-      "Shared scoring primitives in `@workspace/shared` keep the web app and Python worker conceptually aligned"
-    ],
-    "metrics": [
-      {
-        "label": "Workspaces",
-        "value": "7"
-      },
-      {
-        "label": "Topic categories",
-        "value": "11"
-      },
-      {
-        "label": "RSS sources",
-        "value": "5 seeded"
-      },
-      {
-        "label": "Ranking signals",
-        "value": "5"
-      }
-    ],
-    "demonstrates": [
-      "SaaS marketing landing with sample newsletter preview and onboarding flow",
-      "Magic-link authentication and weighted topic preferences across 11 categories",
-      "RSS and scraper collection with AI enrichment, embeddings, and global quality scoring",
-      "Personalized newsletter generation with HTML rendering and click/open tracking",
-      "Composite ranking with greedy diversity selection and 5-minute Redis cache TTL",
-      "Admin console — users, news sources, articles, newsletter editions, worker executions",
-      "Domain-driven modules with typed domain events for future ML and search features",
-      "Docker Compose local stack with PostgreSQL 16 and Redis 7"
-    ],
-    "decisions": [],
-    "tradeoffs": "",
-    "implementation": "Built as a Turborepo monorepo: `apps/web` (Next.js 16 App Router with domain modules for auth, preferences, recommendation, newsletter, analytics, admin), `workers/collector` (Python feedparser + BeautifulSoup pipeline writing via SQLAlchemy to the same Prisma schema), and packages for database, shared scoring/topics/events, and shadcn/ui. The recommendation engine blends five weighted signals in TypeScript; the collector enriches and embeds offline when OpenAI is unavailable. Email delivery uses Resend with open-pixel and click tracking feeding engagement signals back into ranking.",
-    "narrative": [],
-    "interaction_prompt": "",
-    "demo_url": "",
-    "github_url": "",
-    "repo_url": ""
   },
   {
     "id": "passanota",

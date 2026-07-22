@@ -96,12 +96,12 @@ _DOMAIN_KEYWORDS: dict[str, list[str]] = {
         "visualization", "visualização", "visualizacao", "spreadsheet",
     ],
     "Personalized AI & Technology Intelligence": [
-        "newsletter", "newsletters", "knowledgehub", "knowledge", "hub",
+        "astra", "newsletter", "newsletters", "knowledgehub", "knowledge", "hub",
         "rss", "feed", "feeds", "recommendation", "recommendations",
         "personalization", "personalized", "personalizado", "curation",
         "curate", "curadoria", "articles", "article", "artigos", "artigo",
         "intelligence", "inteligência", "inteligencia", "resend", "prisma",
-        "enrichment", "embedding", "embeddings", "ranking", "weekly",
+        "enrichment", "embedding", "embeddings", "ranking", "weekly", "daily",
         "tech-intelligence", "content", "conteúdo", "conteudo",
     ],
 }
@@ -333,6 +333,7 @@ def _intent_bonus(query: str, query_tokens: set[str], entry: KBEntry) -> float:
         bonus += 2.0
 
     newsletter_signals = {
+        "astra",
         "newsletter",
         "newsletters",
         "knowledgehub",
@@ -353,6 +354,7 @@ def _intent_bonus(query: str, query_tokens: set[str], entry: KBEntry) -> float:
         "inteligência",
         "inteligencia",
         "weekly",
+        "daily",
         "resend",
     }
     if query_tokens & newsletter_signals and (
