@@ -23,7 +23,7 @@ substitutions:
   _DEBUG: "false"
   _SESSION_TTL_SECONDS: "1800"
   _SESSION_MAX_MESSAGES: "20"
-  _CORS_ORIGINS: "https://portfolio.caldasdev.com.br"
+  _CORS_ORIGINS: '["https://portfolio.caldasdev.com.br"]'
 
 steps:
   - id: validate-secrets
