@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "verbosity_char_threshold": 600,
+  "cases": [
+    {
+      "id": 1,
+      "message": "Oi, o que você faz?",
+      "lang": "pt",
+      "family": "intro",
+      "expected_primary": null,
+      "session_group": null,
+      "notes": "Curto; specialties reais; sem dump do catálogo"
+    },
+    {
+      "id": 2,
+      "message": "Me fala dos seus projetos",
+      "lang": "pt",
+      "family": "overview",
+      "expected_primary": null,
+      "session_group": null,
+      "notes": "Não essay; poucos destaques; checar length/anti-list"
+    },
+    {
+      "id": 3,
+      "message": "Como você trabalha com agentes de IA?",
+      "lang": "pt",
+      "family": "domain",
+      "expected_primary": "ai-agents-adk",
+      "session_group": null,
+      "notes": "Primary correto; detalhe concreto da KB"
+    },
+    {
+      "id": 4,
+      "message": "Tem algo com Stripe ou pagamentos?",
+      "lang": "pt",
+      "family": "domain",
+      "expected_primary": "payment-integration-platform",
+      "session_group": "pay",
+      "notes": "Abre sessão pay para follow-up #9"
+    },
+    {
+      "id": 5,
+      "message": "O que é o Quark?",
+      "lang": "pt",
+      "family": "nominal",
+      "expected_primary": "quark",
+      "session_group": null,
+      "notes": "Primary = quark"
+    },
+    {
+      "id": 6,
+      "message": "Mostra um lab sobre MCP",
+      "lang": "pt",
+      "family": "nominal",
+      "expected_primary": "mcp-explorer",
+      "session_group": null,
+      "notes": "Primary = mcp-explorer"
+    },
+    {
+      "id": 7,
+      "message": "Como você resolveu cold start no Cloud Run?",
+      "lang": "pt",
+      "family": "tradeoff",
+      "expected_primary": "ai-agents-adk",
+      "session_group": null,
+      "notes": "Usa learning/challenge real ou admite se não souber"
+    },
+    {
+      "id": 8,
+      "message": "Quero uma trilha para aprender MLOps",
+      "lang": "pt",
+      "family": "path",
+      "expected_primary": null,
+      "session_group": null,
+      "notes": "Ordem sensata lab→project; curto"
+    },
+    {
+      "id": 9,
+      "message": "E sobre isso?",
+      "lang": "pt",
+      "family": "follow_up",
+      "expected_primary": "payment-integration-platform",
+      "session_group": "pay",
+      "notes": "Mesmo session_id após #4; mantém tópico pagamentos"
+    },
+    {
+      "id": 10,
+      "message": "Você topa freela? Qual seu salário?",
+      "lang": "pt",
+      "family": "boundary",
+      "expected_primary": null,
+      "session_group": null,
+      "notes": "Redireciona contato; não discute salário"
+    },
+    {
+      "id": 11,
+      "message": "What kind of systems do you build?",
+      "lang": "en",
+      "family": "intro",
+      "expected_primary": null,
+      "session_group": null,
+      "notes": "Short; real specialties; no catalog dump"
+    },
+    {
+      "id": 12,
+      "message": "Tell me about your AI agents work",
+      "lang": "en",
+      "family": "domain",
+      "expected_primary": "ai-agents-adk",
+      "session_group": null,
+      "notes": "Primary ai-agents-adk"
+    },
+    {
+      "id": 13,
+      "message": "Any personal projects I should see?",
+      "lang": "en",
+      "family": "overview",
+      "expected_primary": null,
+      "session_group": null,
+      "notes": "Personal overview; not an essay"
+    },
+    {
+      "id": 14,
+      "message": "How do you handle payment webhooks?",
+      "lang": "en",
+      "family": "domain",
+      "expected_primary": "payment-integration-platform",
+      "session_group": null,
+      "notes": "Primary payment-integration-platform"
+    },
+    {
+      "id": 15,
+      "message": "Walk me through a learning path for cloud architecture",
+      "lang": "en",
+      "family": "path",
+      "expected_primary": null,
+      "session_group": null,
+      "notes": "Sensible order; short"
+    }
+  ]
+}

@@ -1,12 +1,13 @@
 {
   "name": "Lucas Caldas",
   "headline": "Software engineer focused on backend, applied AI, cloud architecture, and MLOps.",
-  "about_en": "I design and deliver reliable production systems — focused on intelligent automation, observability, and scalable architecture. I like understanding the real problem before choosing the solution, and leaving the code simpler than I found it.",
+  "about_en": "I build reliable systems across backend engineering, AI agents, and cloud architecture. My work is centered on production-ready services, automation workflows, and platform decisions that hold under real operational pressure. I focus on clear execution: reducing complexity, improving reliability, and shipping systems that teams can trust in production.",
+  "about_pt": "Construo sistemas confiáveis em engenharia de backend, agentes de IA e arquitetura cloud. Meu trabalho se concentra em serviços prontos para produção, fluxos de automação e decisões de plataforma que aguentam pressão operacional real. Foço em execução clara: reduzir complexidade, melhorar confiabilidade e entregar sistemas em que times podem confiar em produção.",
   "specialties": [
-    "Backend Engineering with Python, .NET/C#, and TypeScript",
-    "AI Agents and automation with ADK, Vertex AI, and MCP",
-    "Cloud Architecture on GCP with Cloud Run, BigQuery, and Pub/Sub",
-    "MLOps and data pipelines focused on reliable operations"
+    "AI Agents & Automation",
+    "Cloud Architecture / GCP",
+    "Payment Systems",
+    "Backend Engineering"
   ],
   "availability": "Available for engineering and architecture roles.",
   "links": {

@@ -10,6 +10,11 @@ class Metric(BaseModel):
     value: str
 
 
+class Decision(BaseModel):
+    title: str
+    reasoning: str
+
+
 class KBEntry(BaseModel):
     id: str
     type: Literal["project", "lab", "personal_project"]
@@ -29,6 +34,10 @@ class KBEntry(BaseModel):
     learnings: list[str] = Field(default_factory=list)
     metrics: list[Metric] = Field(default_factory=list)
     demonstrates: list[str] = Field(default_factory=list)
+    decisions: list[Decision] = Field(default_factory=list)
+    tradeoffs: str = ""
+    implementation: str = ""
+    narrative: list[str] = Field(default_factory=list)
     interaction_prompt: str = ""
     demo_url: str = ""
     github_url: str = ""
@@ -94,6 +103,10 @@ class ProjectDetail(BaseModel):
     learnings: list[str]
     metrics: list[Metric]
     demonstrates: list[str]
+    decisions: list[Decision] = Field(default_factory=list)
+    tradeoffs: str = ""
+    implementation: str = ""
+    narrative: list[str] = Field(default_factory=list)
     interaction_prompt: str
     demo_url: str = ""
     github_url: str = ""

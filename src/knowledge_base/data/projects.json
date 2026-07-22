@@ -2,187 +2,464 @@
   {
     "id": "ai-agents-adk",
     "type": "project",
-    "title": "AI Agents com ADK",
+    "title": "AI Agents with ADK",
     "domain": "AI Agents",
-    "tagline": "Intelligent agents integrated into the GCP ecosystem via MCP Toolbox",
     "summary": "Autonomous agents integrating Jira, Looker, and BigQuery via MCP Toolbox, deployed on Cloud Run with Vertex AI.",
-    "context": "The team needed intelligent agents that could query business data in Jira, Looker, and BigQuery autonomously, without exposing internal APIs directly to the model.",
-    "technologies": ["Python", "ADK", "Vertex AI", "Cloud Run", "BigQuery", "MCP Toolbox"],
-    "tags": ["ai-agents", "gcp", "vertex-ai", "mcp", "cloud-run", "bigquery", "automation", "ia", "llm"],
-    "categories": ["AI Agents", "Cloud Architecture"],
-    "difficulty": "advanced",
-    "featured": true,
     "slug": "/work/ai-agents-adk",
-    "challenges": [
-      "Orchestrate multiple tools (Jira, Looker, BigQuery) reliably without the agent entering loops",
-      "Ensure security access to sensitive data via MCP Toolbox in the GCP environment",
-      "Manage context and memory in long conversations without exceeding token limits",
-      "Deploy on Cloud Run with acceptable cold start for interactive use"
+    "technologies": [
+      "Python",
+      "ADK",
+      "Vertex AI",
+      "Cloud Run",
+      "BigQuery",
+      "MCP Toolbox"
     ],
-    "learnings": [
-      "Describe tools with concrete examples of when not using them reduces unnecessary calls by ~40%",
-      "Separate agents by domain is more robust than a generic agent with many tools",
-      "Structured logs of each agent decision are essential for production debugging"
+    "tags": [
+      "adk",
+      "agents",
+      "ai",
+      "ai-agents-adk",
+      "bigquery",
+      "cloud-run",
+      "mcp-toolbox",
+      "python",
+      "vertex-ai"
     ],
-    "metrics": [
-      {"label": "Integrated tools", "value": "3"},
-      {"label": "Average latency per turn", "value": "~1.8s"},
-      {"label": "Deployment platform", "value": "Cloud Run / GCP"}
+    "categories": [
+      "AI Agents"
     ],
-    "demonstrates": ["Agent orchestration", "MCP Toolbox", "Vertex AI", "Cloud Run", "Jira Looker BigQuery integration"],
-    "interaction_prompt": "",
-    "related_projects": ["multi-agent-explorer", "mcp-explorer", "cloud-architecture-explorer"]
-  },
-  {
-    "id": "payment-integration-platform",
-    "type": "project",
-    "title": "Payment Integration Platform",
-    "domain": "Payment Systems",
-    "tagline": "Stripe event-driven: checkout, subscriptions, and lifecycle management",
-    "summary": "Complete integration with Stripe — webhooks, automatic checkout, subscription management, and automatic payment failure recovery.",
-    "context": "The product needed to support recurring payments with multiple plans, upgrades, and downgrades in real time, and automatic recovery of payment failures.",
-    "technologies": ["Python", "Stripe", "Webhooks", "PostgreSQL", "FastAPI"],
-    "tags": ["payments", "stripe", "webhooks", "fastapi", "postgresql", "subscriptions", "fintech", "billing"],
-    "categories": ["Payment Systems", "Backend Engineering"],
     "difficulty": "advanced",
     "featured": true,
-    "slug": "/work/payment-integration-platform",
+    "related_projects": [
+      "multi-agent-explorer",
+      "mcp-explorer",
+      "cloud-architecture-explorer"
+    ],
+    "tagline": "Intelligent agents integrated into the GCP ecosystem via MCP Toolbox",
+    "context": "The team needed intelligent agents that could autonomously query business data in Jira, Looker, and BigQuery, without directly exposing internal APIs to the model.",
     "challenges": [
-      "Ensure idempotency in Stripe webhook processing",
-      "Synchronize subscription state between Stripe and the local database",
-      "Manage plan transitions with correct prorated values",
-      "Recover payment failures with intelligent retry"
+      "Orchestrating multiple tools (Jira, Looker, BigQuery) reliably without the agent entering loops",
+      "Ensuring secure access to sensitive data via MCP Toolbox in the GCP environment",
+      "Managing context and memory in long conversations without exceeding token limits",
+      "Deploying to Cloud Run with acceptable cold start times for interactive use"
     ],
     "learnings": [
-      "Test webhooks locally with Stripe CLI before production saves hours of debugging",
-      "Log the complete event payload facilitates payment dispute auditing",
-      "Implement webhook delivery log allows reprocessing events manually"
+      "Describing tools with concrete examples of when NOT to use them reduces unnecessary calls by ~40%",
+      "Separating agents by domain (data vs. project vs. report) is more robust than a generic agent with many tools",
+      "Structured logs of each agent decision are essential for debugging in production"
     ],
     "metrics": [
-      {"label": "Event types handled", "value": "12"},
-      {"label": "Success rate at checkout", "value": ">98%"},
-      {"label": "Automatic payment failure recovery", "value": "Automática"}
+      {
+        "label": "Integrated tools",
+        "value": "3"
+      },
+      {
+        "label": "Avg latency per turn",
+        "value": "~1.8s"
+      },
+      {
+        "label": "Deployment platform",
+        "value": "Cloud Run / GCP"
+      }
     ],
-    "demonstrates": ["Event-driven", "Idempotency", "Webhooks", "Recurring payments", "Stripe"],
+    "demonstrates": [
+      "ADK + MCP Toolbox as the integration layer",
+      "Cloud Run for serverless deployment",
+      "BigQuery as the primary analytical data source"
+    ],
+    "decisions": [
+      {
+        "title": "ADK + MCP Toolbox as the integration layer",
+        "reasoning": "Google's ADK (Agent Development Kit) offers native abstractions for orchestrating agents in the Vertex AI ecosystem. MCP Toolbox allows exposing business tools in a standardized way without direct model coupling."
+      },
+      {
+        "title": "Cloud Run for serverless deployment",
+        "reasoning": "Scales to zero for infrequent invocations, native integration with Vertex AI and GCP IAM, no infrastructure management overhead."
+      },
+      {
+        "title": "BigQuery as the primary analytical data source",
+        "reasoning": "Eliminates the need for a separate cache layer — the agent queries BigQuery directly via generated SQL, with paginated results to fit within context."
+      }
+    ],
+    "tradeoffs": "MCP Toolbox adds an indirection layer that increases latency by ~200ms per tool call. Acceptable for conversational use cases, but not for high-frequency pipelines.",
+    "implementation": "Each agent is a Cloud Run service with tool configuration in YAML. MCP Toolbox manages authentication and API exposure for Jira and Looker. The Python orchestrator uses ADK to decide which tool to invoke based on conversation context.",
+    "narrative": [],
     "interaction_prompt": "",
-    "related_projects": ["gpos-payment-system", "retry-failure-simulator"]
-  },
-  {
-    "id": "gpos-payment-system",
-    "type": "project",
-    "title": "GPOS Payment System",
-    "domain": "Payment Systems",
-    "tagline": "Backend .NET/C# for PIX and cards with mTLS authentication",
-    "summary": "Complete payment system in .NET/C# with PIX, cards, mTLS, and remote terminal registration — eliminating the physical device shipping process.",
-    "context": "The GPOS product needed a robust backend to process payments via PIX and cards, with mutual authentication between physical terminals and the server, and remote registration of new devices.",
-    "technologies": [".NET", "C#", "PIX", "mTLS", "REST APIs", "ASP.NET Core"],
-    "tags": ["payments", "pix", "mtls", "dotnet", "csharp", "bacen", "terminal", "fintech", "certificado"],
-    "categories": ["Payment Systems", "Backend Engineering"],
-    "difficulty": "advanced",
-    "featured": true,
-    "slug": "/work/gpos-payment-system",
-    "challenges": [
-      "Implement mTLS for mutual authentication between physical terminals and the server",
-      "Ensure compliance with BACEN rules for PIX transactions",
-      "Eliminate the manual physical device shipping process for registration",
-      "Maintain transactional consistency in unstable connection scenarios"
-    ],
-    "learnings": [
-      "BACEN documentation for PIX is extensive but precise — following it exactly avoids rejections",
-      "Implement circuit breaker in PSP calls to prevent cascading failures",
-      "Immutable transaction logs are mandatory for auditing"
-    ],
-    "metrics": [
-      {"label": "Payment methods", "value": "PIX + Cards"},
-      {"label": "Authentication", "value": "mTLS"},
-      {"label": "Terminal registration", "value": "100% remote"}
-    ],
-    "demonstrates": ["mTLS", "PIX", "BACEN SPI", "Mutual authentication", "Remote registration"],
-    "interaction_prompt": "",
-    "related_projects": ["payment-integration-platform"]
-  },
-  {
-    "id": "transactional-email-microservice",
-    "type": "project",
-    "title": "Transactional Email Microservice",
-    "domain": "Backend Engineering",
-    "tagline": "Decoupled microservice with message queue for email sending",
-    "summary": "Decoupled microservice with message queue, reused across multiple products without code changes.",
-    "context": "Multiple products of the company needed to send transactional emails — confirmation, notification, alerts. Each product had its own duplicated implementation.",
-    "technologies": ["Python", "RabbitMQ", "SMTP", "Docker", "FastAPI", "Jinja2"],
-    "tags": ["microservice", "rabbitmq", "queue", "email", "smtp", "docker", "python"],
-    "categories": ["Backend Engineering"],
-    "difficulty": "intermediate",
-    "featured": false,
-    "slug": "/work/transactional-email-microservice",
-    "challenges": [
-      "Decouple the email sending completely from the business logic of the products",
-      "Ensure reliable delivery even when the SMTP provider is unavailable",
-      "Support dynamic templates without requiring a deploy for each content change"
-    ],
-    "learnings": [
-      "Dead letter queue is essential — without it, failed emails are lost silently",
-      "Rate limiting on the consumer avoids banning the SMTP provider by sending in bursts"
-    ],
-    "metrics": [],
-    "demonstrates": ["Message Queue", "Decoupling", "Retry", "Dead Letter Queue", "Dynamic Templates"],
-    "interaction_prompt": "",
-    "related_projects": ["retry-failure-simulator", "event-processing-pipeline"]
+    "demo_url": "",
+    "github_url": "",
+    "repo_url": ""
   },
   {
     "id": "computer-vision-analytics",
     "type": "project",
     "title": "Computer Vision Analytics",
     "domain": "Computer Vision",
-    "tagline": "People counting and stay time for operational metrics",
-    "summary": "Computer vision pipeline for people counting and stay time analysis generating operational metrics in real time.",
-    "context": "Operations needed to understand flow in physical spaces to optimize resources and scale of service.",
-    "technologies": ["Python", "OpenCV", "YOLO", "PostgreSQL", "FastAPI"],
-    "tags": ["computer-vision", "opencv", "yolo", "ml", "realtime", "analytics", "detection", "vision", "image"],
-    "categories": ["Computer Vision", "Data Engineering"],
+    "summary": "Computer vision pipeline for people counting and dwell time analysis generating real-time operational metrics.",
+    "slug": "/work/computer-vision-analytics",
+    "technologies": [
+      "Python",
+      "OpenCV",
+      "YOLO",
+      "PostgreSQL",
+      "FastAPI"
+    ],
+    "tags": [
+      "computer",
+      "computer-vision-analytics",
+      "fastapi",
+      "opencv",
+      "postgresql",
+      "python",
+      "vision",
+      "yolo"
+    ],
+    "categories": [
+      "Computer Vision"
+    ],
     "difficulty": "advanced",
     "featured": false,
-    "slug": "/work/computer-vision-analytics",
+    "related_projects": [
+      "ml-pipeline-simulator",
+      "data-drift-demo"
+    ],
+    "tagline": "People counting and dwell time for operational metrics",
+    "context": "Operations needed to understand people flow in physical spaces to optimize staffing and service scale.",
     "challenges": [
-      "Detect and track people with acceptable precision on limited hardware",
-      "Calculate stay time even with partial camera occlusion",
-      "Aggregate metrics in real time without overloading the database"
+      "Detecting and tracking people with acceptable accuracy on limited hardware",
+      "Calculating dwell time even with partial camera occlusion",
+      "Aggregating real-time metrics without overloading the database"
     ],
     "learnings": [
-      "Calibrate the entry/exit counting line requires physical tests in the physical space",
-      "Lighting varies a lot throughout the day — histogram normalization improves consistency"
+      "Calibrating the entry/exit counting line requires on-site testing in the physical space",
+      "Lighting varies greatly throughout the day — histogram normalization improves detection consistency"
     ],
     "metrics": [],
-    "demonstrates": ["Object detection", "Tracking", "Real-time metrics", "YOLO", "OpenCV"],
+    "demonstrates": [
+      "YOLO for detection + IoU-based tracker",
+      "In-memory aggregation with periodic flush"
+    ],
+    "decisions": [
+      {
+        "title": "YOLO for detection + IoU-based tracker",
+        "reasoning": "YOLO offers adequate speed for real-time processing. IoU-based tracker is simple and robust enough for low-occlusion scenarios."
+      },
+      {
+        "title": "In-memory aggregation with periodic flush",
+        "reasoning": "Writing to the database every frame would be impractical. Accumulates in memory and persists in 1-minute windows."
+      }
+    ],
+    "tradeoffs": "Data loss on crash between flushes. Acceptable given that operational metrics have tolerance for point-in-time data loss.",
+    "implementation": "OpenCV + YOLO pipeline running in a dedicated process. FastAPI exposing aggregated metrics. Dashboard with flow charts by hour.",
+    "narrative": [],
     "interaction_prompt": "",
-    "related_projects": ["ml-pipeline-simulator", "data-drift-demo"]
+    "demo_url": "",
+    "github_url": "",
+    "repo_url": ""
+  },
+  {
+    "id": "gpos-payment-system",
+    "type": "project",
+    "title": "GPOS Payment System",
+    "domain": "Payment Systems",
+    "summary": "Complete .NET/C# payment system with PIX, cards, mTLS, and remote terminal registration — eliminating the need to ship physical devices.",
+    "slug": "/work/gpos-payment-system",
+    "technologies": [
+      ".NET",
+      "C#",
+      "PIX",
+      "mTLS",
+      "REST APIs"
+    ],
+    "tags": [
+      "c",
+      "gpos-payment-system",
+      "mtls",
+      "net",
+      "payment",
+      "pix",
+      "rest-apis",
+      "systems"
+    ],
+    "categories": [
+      "Payment Systems"
+    ],
+    "difficulty": "advanced",
+    "featured": true,
+    "related_projects": [
+      "payment-integration-platform"
+    ],
+    "tagline": ".NET/C# backend for PIX and cards with mTLS authentication",
+    "context": "The GPOS product needed a robust backend to process payments via PIX and cards, with mutual authentication between terminals and the server, and remote registration of new devices.",
+    "challenges": [
+      "Implementing mTLS for mutual authentication between physical terminals and the server",
+      "Ensuring compliance with BACEN rules for PIX transactions",
+      "Eliminating the manual physical device shipping process for registration",
+      "Maintaining transactional consistency in unstable connection scenarios on terminals"
+    ],
+    "learnings": [
+      "BACEN's PIX documentation is extensive but precise — following it exactly avoids rejections during integration",
+      "Implementing a circuit breaker on PSP calls prevents cascade failures during bank unavailability",
+      "Immutable transaction logs are mandatory for auditing — never UPDATE payment records"
+    ],
+    "metrics": [
+      {
+        "label": "Payment methods",
+        "value": "PIX + Cards"
+      },
+      {
+        "label": "Authentication",
+        "value": "mTLS"
+      },
+      {
+        "label": "Terminal registration",
+        "value": "100% remote"
+      }
+    ],
+    "demonstrates": [
+      "mTLS for bilateral terminal-server authentication",
+      "Remote terminal registration",
+      ".NET as the primary runtime"
+    ],
+    "decisions": [
+      {
+        "title": "mTLS for bilateral terminal-server authentication",
+        "reasoning": "Physical terminals cannot depend on user-rotatable credentials. Client certificates installed on the terminal ensure device identity without human intervention."
+      },
+      {
+        "title": "Remote terminal registration",
+        "reasoning": "The previous process required physically sending the device for configuration. The new flow allows registration via authenticated API during onboarding, significantly reducing logistics costs."
+      },
+      {
+        "title": ".NET as the primary runtime",
+        "reasoning": "Already established stack at the company with mature libraries for PIX (BACEN SPI) and card brand integrations via ISO 8583."
+      }
+    ],
+    "tradeoffs": "mTLS adds complexity to certificate lifecycle management (expiration, revocation). It was necessary to implement an automatic renewal process before expiry.",
+    "implementation": ".NET 8 with ASP.NET Core, Kestrel configuration for mTLS with private CA validation. PIX implemented following the BACEN SPI specification. Terminal registration via authenticated endpoint with multiple verification factors.",
+    "narrative": [],
+    "interaction_prompt": "",
+    "demo_url": "",
+    "github_url": "",
+    "repo_url": ""
+  },
+  {
+    "id": "payment-integration-platform",
+    "type": "project",
+    "title": "Payment Integration Platform",
+    "domain": "Payment Systems",
+    "summary": "Full Stripe integration — webhooks, automated checkout, subscription management, and failed payment recovery.",
+    "slug": "/work/payment-integration-platform",
+    "technologies": [
+      "Python",
+      "Stripe",
+      "Webhooks",
+      "PostgreSQL",
+      "FastAPI"
+    ],
+    "tags": [
+      "fastapi",
+      "payment",
+      "payment-integration-platform",
+      "postgresql",
+      "python",
+      "stripe",
+      "systems",
+      "webhooks"
+    ],
+    "categories": [
+      "Payment Systems"
+    ],
+    "difficulty": "advanced",
+    "featured": true,
+    "related_projects": [
+      "gpos-payment-system",
+      "retry-failure-simulator"
+    ],
+    "tagline": "Stripe event-driven: checkout, subscriptions, and lifecycle management",
+    "context": "The product needed to support recurring payments with multiple plans, real-time upgrades/downgrades, and automatic delinquency recovery.",
+    "challenges": [
+      "Ensuring idempotency in Stripe webhook processing (events can arrive duplicated)",
+      "Synchronizing subscription state between Stripe and the local database without inconsistency",
+      "Managing plan transitions (upgrade/downgrade) with correct proration",
+      "Recovering failed payments with intelligent retry without spamming the customer"
+    ],
+    "learnings": [
+      "Testing webhooks locally with Stripe CLI before production saves hours of debugging",
+      "Logging the full event payload (truncated) makes payment dispute auditing easier",
+      "Implementing a webhook delivery log allows manual reprocessing when needed"
+    ],
+    "metrics": [
+      {
+        "label": "Event types handled",
+        "value": "12"
+      },
+      {
+        "label": "Checkout success rate",
+        "value": ">98%"
+      },
+      {
+        "label": "Delinquency recovery",
+        "value": "Automatic"
+      }
+    ],
+    "demonstrates": [
+      "Event-driven via webhooks with idempotency",
+      "Local state as the source of truth for the application",
+      "Checkout Session vs. Payment Intent"
+    ],
+    "decisions": [
+      {
+        "title": "Event-driven via webhooks with idempotency",
+        "reasoning": "Each Stripe event is processed exactly once using the event ID as an idempotency key in the database. Guarantees consistency even with Stripe retries."
+      },
+      {
+        "title": "Local state as the source of truth for the application",
+        "reasoning": "The application maintains its own subscription model synchronized via webhooks. This allows fast queries without dependence on Stripe API latency."
+      },
+      {
+        "title": "Checkout Session vs. Payment Intent",
+        "reasoning": "Checkout Session for new flows (UI hosted by Stripe, smaller PCI surface). Payment Intent only for automatic renewals already authorized."
+      }
+    ],
+    "tradeoffs": "Maintaining a local duplicate state requires periodic reconciliation with the Stripe API to detect drift. A daily reconciliation job was sufficient for the current volume.",
+    "implementation": "FastAPI receives Stripe webhooks with HMAC signature verification. Each event type has a dedicated handler. Subscription state saved in PostgreSQL with status enum (active, past_due, canceled, trialing).",
+    "narrative": [],
+    "interaction_prompt": "",
+    "demo_url": "",
+    "github_url": "",
+    "repo_url": ""
   },
   {
     "id": "service-licensing-system",
     "type": "project",
     "title": "Service Licensing System",
     "domain": "Backend Engineering",
-    "tagline": "Token activation, permission management, and administrative CRUDs",
-    "summary": "Service licensing system with token activation, granular permission control, and complete administrative panel.",
-    "context": "The product needed to control access to features by license plan, with self-service activation and centralized administrative management.",
-    "technologies": ["C#", ".NET", "PostgreSQL", "JWT", "REST APIs", "EF Core"],
-    "tags": ["licensing", "auth", "jwt", "dotnet", "permissions", "admin", "csharp", "authorization"],
-    "categories": ["Backend Engineering"],
+    "summary": "Licensing system with token activation, granular permission control, and complete admin panel.",
+    "slug": "/work/service-licensing-system",
+    "technologies": [
+      "C#",
+      ".NET",
+      "PostgreSQL",
+      "JWT",
+      "REST APIs"
+    ],
+    "tags": [
+      "backend",
+      "c",
+      "engineering",
+      "jwt",
+      "net",
+      "postgresql",
+      "rest-apis",
+      "service-licensing-system"
+    ],
+    "categories": [
+      "Backend Engineering"
+    ],
     "difficulty": "intermediate",
     "featured": false,
-    "slug": "/work/service-licensing-system",
+    "related_projects": [
+      "payment-integration-platform"
+    ],
+    "tagline": "Token activation, permission management, and admin CRUDs",
+    "context": "The product needed to control access to features by license plan, with self-service activation and centralized admin management.",
     "challenges": [
-      "Model granular permissions by feature without exploding the schema complexity",
-      "Token activation flow with expiration and unique invalidation",
-      "Complete administrative panel with CRUDs"
+      "Modeling granular permissions per feature without exploding schema complexity",
+      "Token activation flow with expiration and single-use invalidation",
+      "Admin panel with complete CRUDs without a pre-made admin framework"
     ],
     "learnings": [
       "Never store tokens in plain text — even activation tokens must be hashed",
-      "Audit log in a separate table for each permission mutation is essential"
+      "Audit log in a separate table for each permission mutation is essential for support"
     ],
     "metrics": [],
-    "demonstrates": ["Token activation", "Granular permissions", "JWT", "Policy-based auth", "Audit Log"],
+    "demonstrates": [
+      "Single-use activation tokens",
+      "Bit-flag permissions instead of junction table"
+    ],
+    "decisions": [
+      {
+        "title": "Single-use activation tokens",
+        "reasoning": "Tokens generated at sale, hashed in the database, valid for N days. After use, marked as consumed. Prevents reuse and is easy to audit."
+      },
+      {
+        "title": "Bit-flag permissions instead of junction table",
+        "reasoning": "Permission count is fixed and small (<64). Bit-flag simplifies verification queries and reduces joins."
+      }
+    ],
+    "tradeoffs": "Bit-flag makes adding new permissions more rigid. Accepted given that the feature set is stable and small.",
+    "implementation": ".NET 8 + EF Core + PostgreSQL. Tokens with SHA-256 + salt hash. JWT for authenticated sessions with permission claims. REST controllers with policy-based authorization.",
+    "narrative": [],
     "interaction_prompt": "",
-    "related_projects": ["payment-integration-platform"]
+    "demo_url": "",
+    "github_url": "",
+    "repo_url": ""
+  },
+  {
+    "id": "transactional-email-microservice",
+    "type": "project",
+    "title": "Transactional Email Microservice",
+    "domain": "Backend Engineering",
+    "summary": "Decoupled microservice with message queue, reused across multiple products without code changes.",
+    "slug": "/work/transactional-email-microservice",
+    "technologies": [
+      "Python",
+      "RabbitMQ",
+      "SMTP",
+      "Docker",
+      "FastAPI"
+    ],
+    "tags": [
+      "backend",
+      "docker",
+      "engineering",
+      "fastapi",
+      "python",
+      "rabbitmq",
+      "smtp",
+      "transactional-email-microservice"
+    ],
+    "categories": [
+      "Backend Engineering"
+    ],
+    "difficulty": "intermediate",
+    "featured": false,
+    "related_projects": [
+      "retry-failure-simulator",
+      "event-processing-pipeline"
+    ],
+    "tagline": "Queue-based decoupled microservice for email delivery",
+    "context": "Multiple company products needed to send transactional emails (confirmation, notification, alerts). Each product had its own duplicated implementation.",
+    "challenges": [
+      "Completely decoupling email sending from product business logic",
+      "Ensuring reliable delivery even when the SMTP provider is unavailable",
+      "Supporting dynamic templates without requiring a deployment for each content change"
+    ],
+    "learnings": [
+      "Dead letter queue is essential — without it, failed emails are silently lost",
+      "Rate limiting on the consumer prevents SMTP provider bans from burst sending"
+    ],
+    "metrics": [],
+    "demonstrates": [
+      "Message queue as the public interface",
+      "Templates stored separately"
+    ],
+    "decisions": [
+      {
+        "title": "Message queue as the public interface",
+        "reasoning": "Producers publish to the queue and are unaffected by SMTP unavailability. The consumer processes at the provider's rate, with automatic retry."
+      },
+      {
+        "title": "Templates stored separately",
+        "reasoning": "Templates in the database allow content changes without deployment. Producers send only the data payload."
+      }
+    ],
+    "tradeoffs": "Asynchronous delivery means the sender doesn't immediately know if the email was sent. Acceptable for transactional emails where seconds of latency is tolerated.",
+    "implementation": "Python consumer reading from RabbitMQ queue, rendering Jinja2 templates, sending via SMTP with exponential retry. Dead letter queue for persistent failures with operational alerting.",
+    "narrative": [],
+    "interaction_prompt": "",
+    "demo_url": "",
+    "github_url": "",
+    "repo_url": ""
   }
 ]
