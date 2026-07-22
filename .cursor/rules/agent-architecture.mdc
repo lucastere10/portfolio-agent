@@ -1,0 +1,32 @@
+---
+description: Princípios de arquitetura do portfolio-agent, decisões travadas e fluxo por etapas
+alwaysApply: true
+---
+
+# Portfolio Agent — Architecture (always on)
+
+## Fonte da verdade
+
+Antes de alterar KB, instruction, orquestração ou retrieval, leia:
+
+- [`docs/agent-roadmap.md`](docs/agent-roadmap.md)
+- [`AGENTS.md`](AGENTS.md)
+
+## Decisões travadas
+
+- Fonte editorial: **`portfolio/content/**`** (MDX + meta)
+- KB: artefato derivado em `src/knowledge_base/data/`
+- Stack: FastAPI + Google ADK + catálogo in-memory
+- Sem embeddings/vector DB nesta wave
+- Locale canônico dos cases na KB: **en** (+ `*_pt` para voz/perfil)
+- Browser nunca chama este serviço direto — só via BFF do portfolio
+
+## Princípios
+
+1. Wave D0–A5 fechada; manutenção segue convenções do roadmap/AGENTS.
+2. Não misturar sync de KB com rewrite de orquestração no mesmo PR amplo.
+3. Retrieve once; contexto magro; instruções sem conflito.
+4. Após A1, não editar JSON da KB na mão — regenerar a partir do content.
+5. Marque checkboxes no roadmap ao concluir etapas.
+6. Não faça commit a menos que o usuário peça.
+7. Regressão offline: `uv run pytest` (CI); baseline LLM é local.
