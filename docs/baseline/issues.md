@@ -21,7 +21,7 @@
 ## Pós-B0
 
 - Sticky lang (default PT); overview PT sem taglines EN
-- Fuzzy KnowledgeHub / PassaNota; signature → `ai-agents-adk`
+- Fuzzy Astra / KnowledgeHub / PassaNota; signature → `ai-agents-adk`
 - `max_output_tokens=400`; strip Claro/Sure
 - Suite: `uv run pytest` (46+)
 

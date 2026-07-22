@@ -1,11 +1,11 @@
 {
   "name": "Lucas Caldas",
   "headline": "Software engineer focused on backend, applied AI, cloud architecture, and MLOps.",
-  "about_en": "I build reliable systems across backend engineering, AI agents, and cloud architecture. My work is centered on production-ready services, automation workflows, and platform decisions that hold under real operational pressure. I focus on clear execution: reducing complexity, improving reliability, and shipping systems that teams can trust in production.",
-  "about_pt": "Construo sistemas confiáveis em engenharia de backend, agentes de IA e arquitetura cloud. Meu trabalho se concentra em serviços prontos para produção, fluxos de automação e decisões de plataforma que aguentam pressão operacional real. Foço em execução clara: reduzir complexidade, melhorar confiabilidade e entregar sistemas em que times podem confiar em produção.",
+  "about_en": "I'm a software engineer based in Rio de Janeiro. Right now I focus on architecture, mostly on GCP, and on building solutions that put AI to work: agents, MCP, and automations that actually make it to production. I've spent a good amount of time on backend work with Java, Python, .NET/C#, and TypeScript. Microservices, events, Stripe and PIX payments, messaging, licensing. That background is what helps me treat AI as engineering: clear contracts, observability, and a plan for when things break. I enjoy studying and shipping agents with ADK, Vertex AI, and MCP. What draws me in is the practical side: tool orchestration, cold start, cost, and reliability. I also keep personal projects going, like Astra, a personalized AI intelligence newsletter. If you want to chat about architecture, agents, or something you're building, I'm around.",
+  "about_pt": "Sou desenvolvedor de software no Rio de Janeiro. Hoje meu foco é arquitetura, principalmente no GCP, e em construir soluções que usam IA no dia a dia: agentes, MCP e automações que realmente chegam em produção. Já trabalhei bastante com backend em Java, Python, .NET/C# e TypeScript. Microsserviços, eventos, pagamentos com Stripe e PIX, mensageria e sistemas para licenciamento de produtos e soluções. Essa experiência me ajuda a encarar IA como engenharia: contratos claros, observabilidade e o que fazer quando as coisas falham. Gosto de estudar e colocar no ar agentes com ADK, Vertex AI e MCP. O que me interessa é o lado prático: orquestração de tools, cold start, custo e confiabilidade. Também mantenho projetos próprios, como a Astra, uma newsletter personalizada de inteligência em IA. Se quiser bater um papo sobre arquitetura, agentes ou algum produto que você está construindo, fico à vontade.",
   "specialties": [
-    "AI Agents & Automation",
     "Cloud Architecture / GCP",
+    "AI Agents & MCP",
     "Payment Systems",
     "Backend Engineering"
   ],

@@ -9,7 +9,10 @@ from src.knowledge_base.loader import get_all
 
 # Canonical id → accepted spellings / nicknames (lowercase)
 _ALIASES: dict[str, tuple[str, ...]] = {
-    "newsletter": (
+    "astra": (
+        "astra",
+        "astra newsletter",
+        "astra-newsletter",
         "knowledgehub",
         "knowledge hub",
         "knowledge-hub",
@@ -19,6 +22,7 @@ _ALIASES: dict[str, tuple[str, ...]] = {
         "oknowlage",
         "oknowlage uhb",
         "khub",
+        "newsletter",
     ),
     "passanota": (
         "passa nota",

@@ -90,6 +90,180 @@
     "repo_url": ""
   },
   {
+    "id": "ai-delivery-workspace",
+    "type": "project",
+    "title": "AI Delivery Workspace",
+    "domain": "AI Agents",
+    "summary": "SPA that operationalizes delivery methodology — projects, iterations, versioned artifacts, and async AI document pipelines with dependency-aware generation and in-browser editing.",
+    "slug": "/work/ai-delivery-workspace",
+    "technologies": [
+      "TypeScript",
+      "React",
+      "Vite",
+      "TipTap",
+      "Supabase",
+      "Keycloak",
+      "n8n",
+      "Tailwind"
+    ],
+    "tags": [
+      "agents",
+      "ai",
+      "ai-delivery-workspace",
+      "keycloak",
+      "n8n",
+      "react",
+      "supabase",
+      "tailwind",
+      "tiptap",
+      "typescript",
+      "vite"
+    ],
+    "categories": [
+      "AI Agents"
+    ],
+    "difficulty": "intermediate",
+    "featured": false,
+    "related_projects": [
+      "ai-agents-adk",
+      "astra",
+      "drop"
+    ],
+    "tagline": "Methodology-driven project workspace with AI-assisted document generation",
+    "context": "The team needed a workspace to run software-delivery methodology end to end — manage projects and iterations, collect input artifacts, generate PRDs and downstream deliverables with AI assistance, track approval status, and edit or compare document versions without leaving the browser.",
+    "challenges": [
+      "Orchestrating long-running document generation without blocking the UI",
+      "Enforcing dependency order between document types so generation quality does not degrade",
+      "Supporting rich in-browser editing and version compare for markdown and structured backlogs",
+      "Authenticating a public SPA against an OIDC identity provider while calling BaaS APIs and automation webhooks"
+    ],
+    "learnings": [
+      "Validated upstream references materially improve AI document quality versus generating from raw uploads alone",
+      "Legacy type aliases are needed when artifact slugs evolve across partial deploys",
+      "Paste contamination from form boundaries must be stripped before documents land in the editor"
+    ],
+    "metrics": [],
+    "demonstrates": [
+      "BaaS for CRUD and file storage, automation platform for AI generation",
+      "Artifact dependency matrix before generation",
+      "TipTap editors plus Myers diff for version compare",
+      "Async generation UX with polling"
+    ],
+    "decisions": [
+      {
+        "title": "BaaS for CRUD and file storage, automation platform for AI generation",
+        "reasoning": "Edge functions and object storage handle projects, iterations, and artifact files. Document generation posts structured payloads to automation webhooks that read from storage and write results back — keeping the SPA thin and pipelines swappable."
+      },
+      {
+        "title": "Artifact dependency matrix before generation",
+        "reasoning": "Downstream artifacts require validated upstream documents. A typed dependency matrix blocks generation until references exist, improving output quality and reducing wasted pipeline runs."
+      },
+      {
+        "title": "TipTap editors plus Myers diff for version compare",
+        "reasoning": "TipTap covers markdown/HTML editing with paste sanitization; a custom Myers/LCS diff powers side-by-side version compare for large documents without shipping a heavy third-party stack."
+      },
+      {
+        "title": "Async generation UX with polling",
+        "reasoning": "Long workflows cannot return synchronously. A generation context plus polling refreshes artifact status lists until processing completes or fails."
+      }
+    ],
+    "tradeoffs": "Coupling to external automation workflows means pipeline changes can break the SPA contract — mitigated with typed payloads and env-specific webhook bases. Polling is simpler than websockets but adds request noise on long jobs. Embedding an OIDC client secret in a SPA is a security smell; password-grant convenience traded for a weaker public-client model that should move to a proper public OIDC flow.",
+    "implementation": "React/Vite SPA with protected routes, project tables, ideation workspace, drag-drop uploads to object storage, TipTap and hierarchical backlog editors, version compare, and multi-env CI/CD serving via nginx with health probes.",
+    "narrative": [],
+    "interaction_prompt": "",
+    "demo_url": "",
+    "github_url": "",
+    "repo_url": ""
+  },
+  {
+    "id": "budget-diarization-platform",
+    "type": "project",
+    "title": "Budget Diarization Platform",
+    "domain": "Data Engineering",
+    "summary": "Replaced a spreadsheet-heavy monthly planning cycle with a guided wizard that validates inputs, applies historical share weights, preserves monthly totals under calibration, and exports versioned warehouse-shaped files.",
+    "slug": "/work/budget-diarization-platform",
+    "technologies": [
+      "TypeScript",
+      "TanStack Start",
+      "React",
+      "Bun",
+      "MySQL",
+      "SQL Server",
+      "Zod",
+      "Docker",
+      "Kubernetes"
+    ],
+    "tags": [
+      "budget-diarization-platform",
+      "bun",
+      "data",
+      "docker",
+      "engineering",
+      "kubernetes",
+      "mysql",
+      "react",
+      "sql-server",
+      "tanstack-start",
+      "typescript",
+      "zod"
+    ],
+    "categories": [
+      "Data Engineering"
+    ],
+    "difficulty": "intermediate",
+    "featured": false,
+    "related_projects": [
+      "drop",
+      "ai-delivery-workspace",
+      "astra"
+    ],
+    "tagline": "Monthly commercial budget split into daily store-category rows with audited calibration",
+    "context": "The team needed to automate monthly multi-store commercial budget planning — turning monthly totals into daily amounts by store and category with fidelity to warehouse conventions, instead of fragile spreadsheet workflows.",
+    "challenges": [
+      "Enforcing accounting identities and signed deduction conventions aligned to the warehouse",
+      "Deriving daily share weights from historical revenue when some store-days are closed or missing history",
+      "Allowing manual calibration without breaking monthly gross-revenue and profit totals",
+      "Keeping a strict dual-database boundary — read-only warehouse history vs. app persistence for versioned exports"
+    ],
+    "learnings": [
+      "Warehouse sign conventions for taxes and cost deductions must be normalized at ingest or identity checks fire false positives",
+      "Closed-store days require share renormalization; otherwise daily rows underfill the monthly total",
+      "Chunked persistence is necessary once export payloads hit reverse-proxy body limits — draft abort prevents orphan partial versions"
+    ],
+    "metrics": [],
+    "demonstrates": [
+      "Historical share-based diarization with uniform fallback",
+      "Pluggable calendar reference strategies",
+      "Calibration with locks, proportional redistribution, and audit log",
+      "Chunked versioned export persistence"
+    ],
+    "decisions": [
+      {
+        "title": "Historical share-based diarization with uniform fallback",
+        "reasoning": "Daily weights come from historical gross revenue per store×category. When history is missing, uniform shares keep the cycle unblocked; closed days trigger renormalization so monthly totals still close."
+      },
+      {
+        "title": "Pluggable calendar reference strategies",
+        "reasoning": "Default mapping uses a fixed day offset that preserves weekday. An alternate strategy maps the N-th weekday occurrence in the prior year. A strategy registry keeps the UI and rematerialization path swappable without rewriting the share engine."
+      },
+      {
+        "title": "Calibration with locks, proportional redistribution, and audit log",
+        "reasoning": "Planners can adjust selected fields at row, day, or store-day scope. Locked rows are excluded from redistribution; complementary fields are rateio'd so monthly invariants hold. Every change stores justification and snapshots for undo."
+      },
+      {
+        "title": "Chunked versioned export persistence",
+        "reasoning": "Large warehouse-shaped exports are persisted in begin/append/finalize steps to avoid proxy size limits, with abort on failure and a current-version flag for history rehydrate."
+      }
+    ],
+    "tradeoffs": "Output quality depends on warehouse history coverage — thin history falls back to uniform shares and needs more calibration. The multi-step wizard is heavier than a single spreadsheet, but critical validation gates and auditability outweigh the friction.",
+    "implementation": "Full-stack TypeScript app (TanStack Start) with a Zustand-backed wizard — upload, validate, reference mapping, diarization, calibration, holidays, export, and history. Server functions talk to SQL Server for historical shares and MySQL for versioned exports via dbmate migrations. Docker image deployed to Kubernetes through a CI pipeline.",
+    "narrative": [],
+    "interaction_prompt": "",
+    "demo_url": "",
+    "github_url": "",
+    "repo_url": ""
+  },
+  {
     "id": "computer-vision-analytics",
     "type": "project",
     "title": "Computer Vision Analytics",

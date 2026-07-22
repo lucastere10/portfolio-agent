@@ -40,7 +40,7 @@ Inventário slug-a-slug entre `portfolio/content/` e `portfolio-agent/src/knowle
 | `quark` | sim | rico | overview→summary; technicalNotes→implementation; links ok |
 | `passanota` | sim | rico | idem |
 | `drop` | sim | rico | idem |
-| `newsletter` | sim | rico | idem |
+| `astra` | sim | rico | idem |
 
 ---
 

@@ -98,12 +98,12 @@ RECOMMEND_CURATED_ORDER = (
     "quark",
     "drop",
     "passanota",
-    "newsletter",
+    "astra",
 )
 
-RECOMMEND_PERSONAL_ORDER = ("quark", "drop", "passanota", "newsletter")
+RECOMMEND_PERSONAL_ORDER = ("quark", "drop", "passanota", "astra")
 
-OVERVIEW_PERSONAL_ORDER = ("drop", "quark", "passanota", "newsletter")
+OVERVIEW_PERSONAL_ORDER = ("drop", "quark", "passanota", "astra")
 
 LEARNING_HINTS = frozenset(
     {
@@ -188,6 +188,7 @@ PERSONAL_TYPE_HINTS = (
     "insights",
     "planilha",
     "newsletter",
+    "astra",
     "knowledgehub",
     "rss",
     "curation",
