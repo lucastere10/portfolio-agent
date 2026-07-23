@@ -36,6 +36,14 @@ class SessionStore(ABC):
     def get_adk_service(self) -> BaseSessionService:
         ...
 
+    @abstractmethod
+    def get_response_lang(self, session_id: str) -> Optional[str]:
+        ...
+
+    @abstractmethod
+    def set_response_lang(self, session_id: str, lang: str) -> None:
+        ...
+
 
 class AdkInMemorySessionStore(SessionStore):
     """In-memory session store backed by ADK's session service."""
@@ -43,9 +51,17 @@ class AdkInMemorySessionStore(SessionStore):
     def __init__(self, adk_service: InMemorySessionService) -> None:
         self._adk = adk_service
         self._user_id = settings.default_user_id
+        self._response_lang: dict[str, str] = {}
 
     def get_adk_service(self) -> BaseSessionService:
         return self._adk
+
+    def get_response_lang(self, session_id: str) -> Optional[str]:
+        return self._response_lang.get(session_id)
+
+    def set_response_lang(self, session_id: str, lang: str) -> None:
+        if lang in ("pt", "en"):
+            self._response_lang[session_id] = lang
 
     async def get_or_create(self, session_id: Optional[str] = None) -> str:
         sid = (session_id or "").strip() or str(uuid.uuid4())

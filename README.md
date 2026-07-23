@@ -1,17 +1,54 @@
 # 🤖 Portfolio Agent
 
-> Agente conversacional inteligente alimentado por Google ADK e FastAPI com recomendações semânticas de projetos e labs.
+> Agente conversacional inteligente alimentado por Google ADK e FastAPI com recomendações de projetos e labs.
 
 Um servidor FastAPI que oferece uma API RESTful para interações com um agente conversacional baseado em IA. O agente usa a base de conhecimento integrada para fornecer recomendações personalizadas de projetos e labs do portfólio.
+
+## Arquitetura & roadmap
+
+Antes de alterar KB, instruções ou orquestração, leia:
+
+- [`AGENTS.md`](AGENTS.md) — índice operacional
+- [`docs/agent-roadmap.md`](docs/agent-roadmap.md) — fases D0 → A5, checklists e decisões travadas
+- [`docs/knowledge-contract.md`](docs/knowledge-contract.md) · [`docs/conversation-quality.md`](docs/conversation-quality.md) · [`docs/content-gap.md`](docs/content-gap.md)
+
+### Busca do catálogo (lexical — A4)
+
+A recomendação de projetos/labs é **lexical**, não embeddings / vector DB:
+
+- Tokenização + overlap estilo Jaccard em campos ponderados (título, tags, challenges, …)
+- Match de **frases** (bigrams / ops conhecidas: `cold start`, `cloud run`, …) em campos ricos
+- Bônus de domínio, intent, tags via `CatalogIndexes`, featured leve
+- Em perguntas de experiência (“como você resolveu…”), preferência **work > lab**
+
+Smoke sem LLM: `python scripts/check_retrieval.py`
+
+### Sync da knowledge base (A1)
+
+A fonte editorial é o repo **portfolio** (`content/**`). Neste repo a KB em `src/knowledge_base/data/` é **gerada**:
+
+```bash
+# default: ../portfolio/content
+python scripts/generate_kb.py
+
+# ou:
+set PORTFOLIO_CONTENT_DIR=C:\path\to\portfolio\content
+python scripts/generate_kb.py
+
+# só checar drift (exit 1 se diferir):
+python scripts/generate_kb.py --check
+```
+
+Não edite `projects.json` / `personal_projects.json` / `labs.json` na mão — altere o MDX no portfolio e regenere. `persona.json` (voz) permanece curado manualmente.
 
 ---
 
 ## ✨ Características
 
 - **Conversas Multi-turno**: Mantém contexto de sessão por até 30 minutos
-- **Recomendações Semânticas**: Busca de projetos e labs através de embeddings
+- **Recomendações por catálogo**: Busca lexical (Jaccard + frases + indexes/tag/domínio) — sem embeddings
 - **Múltiplos Provedores de LLM**: Suporta Google Gemini e OpenAI
-- **Base de Conhecimento Integrada**: Carregamento automático de catálogo, perfil e skills
+- **Base de Conhecimento Integrada**: Catálogo gerado a partir de `portfolio/content` (`generate_kb.py`)
 - **Cache Inteligente**: Indexação em memória para buscas rápidas
 - **CORS Configurável**: Compatível com front-ends locais e remotos
 - **Cloud Run Ready**: Dockerfile otimizado para Google Cloud Platform
@@ -28,11 +65,14 @@ portfolio-agent/
 │   ├── api/                    # API routes (FastAPI)
 │   ├── config.py              # Settings & environment
 │   ├── domain/                # Business logic
+│   ├── evaluation/            # Style heuristics (baseline + pytest)
 │   ├── knowledge_base/        # Índices e loader de conhecimento
 │   ├── orchestration/         # Orquestração de fluxo
 │   ├── providers/             # Configuração de LLM providers
 │   ├── session/               # Gerenciamento de sessão
 │   └── tools/                 # Ferramentas do agente
+├── tests/                      # Suite pytest offline (CI)
+├── scripts/                    # generate_kb, baseline, check_retrieval
 ├── main.py                     # FastAPI entry point
 ├── pyproject.toml             # Dependências Python
 ├── Dockerfile                 # Multi-stage build otimizado
@@ -280,16 +320,29 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 ## 🧪 Testes
 
+Suite **offline** (sem LLM) — gate de CI:
+
 ```bash
-# Com pytest (não incluído, adicionar se necessário)
-pip install pytest pytest-asyncio
-
-# Executar testes
-pytest
-
-# Com cobertura
-pytest --cov=src/
+uv sync --group dev
+uv run pytest
 ```
+
+Cobre: loader/schema KB, primary lexical (golden cases), intent, heurísticas de estilo + overview determinístico.
+
+Smokes manuais (não rodam no CI):
+
+```bash
+# Retrieval lexical (delega a tests/test_search.py)
+uv run python scripts/check_retrieval.py
+
+# Baseline conversacional — precisa agent em :8000 + Gemini
+uv run python scripts/run_baseline.py
+
+# Drift KB vs portfolio/content (local; content não está neste repo)
+uv run python scripts/generate_kb.py --check
+```
+
+**Limites:** busca é lexical (não embeddings). Baseline LLM é regressão local, não gate do GitHub Actions. Ver [`docs/baseline/README.md`](docs/baseline/README.md), [`docs/agent-roadmap.md`](docs/agent-roadmap.md), [`AGENTS.md`](AGENTS.md).
 
 ---
 

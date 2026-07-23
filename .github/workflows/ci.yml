@@ -29,6 +29,9 @@ jobs:
       - name: Compile
         run: python -m compileall -q .
 
+      - name: Pytest (offline)
+        run: uv run pytest -q
+
       - name: Import smoke test
         env:
           DEBUG: "true"

@@ -1,0 +1,25 @@
+---
+description: Orquestração de chat, tools e retrieval do portfolio-agent
+globs:
+  - src/orchestration/**
+  - src/tools/**
+  - src/knowledge_base/indexes.py
+  - docs/agent-roadmap.md
+alwaysApply: false
+---
+
+# Orchestration / retrieval
+
+Roadmap: [`docs/agent-roadmap.md`](docs/agent-roadmap.md) — fases **A3**, **A4** (done).
+
+## Regras
+
+- Happy path: busca no handler alimenta painel **e** contexto (retrieve once).
+- Intent em `src/orchestration/intent.py` — intro/boundary sem matches.
+- Tools ADK: só `get_portfolio_item` sob demanda; sem `search_portfolio` / `build_learning_path` no agent.
+- Heurísticas compartilhadas em `src/orchestration/hints.py`.
+- Doc: [`docs/orchestration.md`](docs/orchestration.md).
+- Ranking lexical em `src/tools/search.py`: phrases + experience bias + `get_indexes()` tag boost (A4).
+- Smoke: `python scripts/check_retrieval.py`.
+- Não introduzir vector DB / Redis nesta wave salvo pedido explícito.
+- Preservar contrato da API consumida pelo BFF do portfolio.

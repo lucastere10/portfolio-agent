@@ -8,11 +8,7 @@ from google.genai import types
 
 from src.adk.instruction import dynamic_instruction
 from src.providers.factory import resolve_model
-from src.tools.portfolio_tools import (
-    build_learning_path,
-    get_portfolio_item,
-    search_portfolio,
-)
+from src.tools.portfolio_tools import get_portfolio_item
 
 AGENT_NAME = "portfolio_agent"
 
@@ -27,12 +23,12 @@ def create_portfolio_agent() -> LlmAgent:
         ),
         instruction=dynamic_instruction,
         tools=[
-            FunctionTool(search_portfolio),
+            # Retrieve-once: handler already searched / built learning paths.
+            # Only allow deep-dive by id when the user asks for more detail.
             FunctionTool(get_portfolio_item),
-            FunctionTool(build_learning_path),
         ],
         generate_content_config=types.GenerateContentConfig(
-            temperature=0.45,
-            max_output_tokens=400,
+            temperature=0.5,
+            max_output_tokens=640,
         ),
     )

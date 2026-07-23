@@ -1,0 +1,25 @@
+---
+description: Estilo de resposta, instruction e persona do portfolio-agent
+globs:
+  - src/adk/**
+  - src/knowledge_base/context.py
+  - src/knowledge_base/data/persona.json
+  - src/knowledge_base/data/profile.json
+  - docs/conversation-quality.md
+alwaysApply: false
+---
+
+# Conversation quality
+
+Roadmap: [`docs/agent-roadmap.md`](docs/agent-roadmap.md) — fases **A0**, **A2**.  
+Política: [`docs/conversation-quality.md`](docs/conversation-quality.md).
+
+## Regras
+
+- Respostas ≤ 4 frases salvo pedido explícito de detalhe.
+- Eliminar conflito overview (“liste todos”) vs brevity.
+- Contexto injetado: 1 primary (+ no máx. 1 related).
+- Sem bajulação (“ótima pergunta”); sem repetir o painel.
+- Não inventar projetos, métricas ou stacks fora da KB.
+- Few-shots e persona PT seguem a política — não reabrir decisões de voz sem atualizar o doc.
+- Validar com golden queries do doc de qualidade.

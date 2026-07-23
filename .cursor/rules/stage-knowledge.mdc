@@ -1,0 +1,27 @@
+---
+description: Sync e schema da knowledge base do portfolio-agent
+globs:
+  - src/knowledge_base/**
+  - docs/knowledge-contract.md
+  - docs/content-gap.md
+  - scripts/**/generate*
+alwaysApply: false
+---
+
+# Knowledge base / sync
+
+Roadmap: [`docs/agent-roadmap.md`](docs/agent-roadmap.md) — fase **A1**.  
+Contrato: [`docs/knowledge-contract.md`](docs/knowledge-contract.md).  
+Gap: [`docs/content-gap.md`](docs/content-gap.md).
+
+## Regras
+
+- Fonte editorial é `portfolio/content/**`, não os JSONs deste repo.
+- Seguir [`docs/knowledge-contract.md`](docs/knowledge-contract.md) (mapeamento work / personal / labs alinhado aos schemas Zod).
+- Personal projects: `overview`→summary, `highlights`→challenges, `technicalNotes`→implementation — não campos de work.
+- Após A1: mudanças de cases/labs → no portfolio, depois `generate_kb.py`.
+- Não adicionar entry só na KB sem MDX correspondente no site.
+- Não sobrescrever `persona.json` voice/boundaries no generate (A2).
+- Extensões de schema (`decisions`, `tradeoffs`, `implementation`, `narrative`) seguem o contract.
+- Atualizar `content-gap.md` quando fechar profundidade de um grupo de slugs.
+- Não introduzir embeddings nesta wave.
