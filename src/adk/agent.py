@@ -20,7 +20,7 @@ def create_portfolio_agent() -> LlmAgent:
         name=AGENT_NAME,
         model=build_routing_llm(),
         description=(
-            "Lucas Caldas — software engineer portfolio assistant. "
+            "Lucas Caldas, software engineer portfolio assistant. "
             "Answers questions about background, projects, labs, and technical experience."
         ),
         instruction=dynamic_instruction,

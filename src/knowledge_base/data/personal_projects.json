@@ -4,7 +4,7 @@
     "type": "personal_project",
     "title": "Astra",
     "domain": "Personalized AI & Technology Intelligence",
-    "summary": "Astra ranks technology signal to your interests and delivers it as a personalized newsletter — intelligence first, inbox second. A Python collector continuously ingests articles from curated RSS, scrapers, and optional Exa sources, then enriches them with AI (summaries, topics, keywords, embeddings, quality scores) and deduplicates near-duplicates. A composite recommendation engine ranks content per user from topic affinity, engagement, freshness, diversity, and global quality — without relying solely on LLM prompts. Users get Astra Daily or Weekly digests via Resend, with open/click tracking feeding ranking.",
+    "summary": "Astra ranks technology signal to your interests and delivers it as a personalized newsletter. The focus is the intelligence layer, not just filling the inbox. A Python collector continuously ingests articles from curated RSS, scrapers, and optional Exa sources, then enriches them with AI (summaries, topics, keywords, embeddings, quality scores) and deduplicates near-duplicates. A composite recommendation engine ranks content per user from topic affinity, engagement, freshness, diversity, and global quality, without relying solely on LLM prompts. Users get Astra Daily or Weekly digests via Resend, with open/click tracking feeding ranking.",
     "slug": "/projects/astra",
     "technologies": [
       "Next.js 16",
@@ -58,12 +58,12 @@
       "quark"
     ],
     "tagline": "Personalized AI & technology intelligence, delivered Daily or Weekly.",
-    "context": "Astra ranks technology signal to your interests and delivers it as a personalized newsletter — intelligence first, inbox second. A Python collector continuously ingests articles from curated RSS, scrapers, and optional Exa sources, then enriches them with AI (summaries, topics, keywords, embeddings, quality scores) and deduplicates near-duplicates. A composite recommendation engine ranks content per user from topic affinity, engagement, freshness, diversity, and global quality — without relying solely on LLM prompts. Users get Astra Daily or Weekly digests via Resend, with open/click tracking feeding ranking.",
+    "context": "Astra ranks technology signal to your interests and delivers it as a personalized newsletter. The focus is the intelligence layer, not just filling the inbox. A Python collector continuously ingests articles from curated RSS, scrapers, and optional Exa sources, then enriches them with AI (summaries, topics, keywords, embeddings, quality scores) and deduplicates near-duplicates. A composite recommendation engine ranks content per user from topic affinity, engagement, freshness, diversity, and global quality, without relying solely on LLM prompts. Users get Astra Daily or Weekly digests via Resend, with open/click tracking feeding ranking.",
     "challenges": [
       "Python collector decoupled from Next.js, sharing a Prisma/Supabase PostgreSQL schema via SQLAlchemy",
       "5-signal composite ranking (quality, topic affinity, engagement, freshness, diversity) with optional Redis cache",
       "Pipeline: collect → enrich → embed → dedup → score → deliver (Daily/Weekly cadences)",
-      "Production on GCP Cloud Run — astra-web, astra-collect, astra-deliver — with Cloud Scheduler"
+      "Production on GCP Cloud Run (astra-web, astra-collect, astra-deliver) with Cloud Scheduler"
     ],
     "learnings": [
       "Composite scoring beats prompt-only personalization for explainability, cost control, and tunable ranking",
@@ -112,7 +112,7 @@
     "type": "personal_project",
     "title": "Drop",
     "domain": "Data Analytics / AI",
-    "summary": "Drop is a self-serve data analysis platform that turns raw spreadsheets into actionable insights in minutes. Users drag-and-drop CSV, XLSX, or JSON files and receive instant statistical profiling — schema detection, missing values, correlations, outlier analysis, and a letter-grade data quality score. AI generates executive summaries, prioritized insights, ML use-case recommendations, and auto-built charts on a draggable dashboard grid. A floating chat assistant lets users ask natural-language questions about their dataset. Anonymous trials expire in 24 hours; authenticated users get persistent history, sharing, favorites, and a credit-based quota system across Free, Paid, and Enterprise tiers.",
+    "summary": "Drop is a self-serve data analysis platform that turns raw spreadsheets into actionable insights in minutes. Users drag-and-drop CSV, XLSX, or JSON files and receive instant statistical profiling: schema detection, missing values, correlations, outlier analysis, and a letter-grade data quality score. AI generates executive summaries, prioritized insights, ML use-case recommendations, and auto-built charts on a draggable dashboard grid. A floating chat assistant lets users ask natural-language questions about their dataset. Anonymous trials expire in 24 hours; authenticated users get persistent history, sharing, favorites, and a credit-based quota system across Free, Paid, and Enterprise tiers.",
     "slug": "/projects/drop",
     "technologies": [
       "Next.js 16",
@@ -172,17 +172,17 @@
       "ai-agents-adk"
     ],
     "tagline": "Clean data. Clear insights. Immediate action.",
-    "context": "Drop is a self-serve data analysis platform that turns raw spreadsheets into actionable insights in minutes. Users drag-and-drop CSV, XLSX, or JSON files and receive instant statistical profiling — schema detection, missing values, correlations, outlier analysis, and a letter-grade data quality score. AI generates executive summaries, prioritized insights, ML use-case recommendations, and auto-built charts on a draggable dashboard grid. A floating chat assistant lets users ask natural-language questions about their dataset. Anonymous trials expire in 24 hours; authenticated users get persistent history, sharing, favorites, and a credit-based quota system across Free, Paid, and Enterprise tiers.",
+    "context": "Drop is a self-serve data analysis platform that turns raw spreadsheets into actionable insights in minutes. Users drag-and-drop CSV, XLSX, or JSON files and receive instant statistical profiling: schema detection, missing values, correlations, outlier analysis, and a letter-grade data quality score. AI generates executive summaries, prioritized insights, ML use-case recommendations, and auto-built charts on a draggable dashboard grid. A floating chat assistant lets users ask natural-language questions about their dataset. Anonymous trials expire in 24 hours; authenticated users get persistent history, sharing, favorites, and a credit-based quota system across Free, Paid, and Enterprise tiers.",
     "challenges": [
       "Zero-to-insight upload flow with sessionStorage handoff for instant results-page rendering",
-      "AI Discovery suite — executive summaries, prioritized insights, and ML recommendations via async Cloud Tasks",
-      "Smart chart dashboard — drag-and-resize grid with Recharts and layout persistence",
-      "Split architecture — independent Next.js frontend and Django API repos, each with Cloud Build → Cloud Run pipeline"
+      "AI Discovery suite: executive summaries, prioritized insights, and ML recommendations via async Cloud Tasks",
+      "Smart chart dashboard: drag-and-resize grid with Recharts and layout persistence",
+      "Split architecture: independent Next.js frontend and Django API repos, each with Cloud Build → Cloud Run pipeline"
     ],
     "learnings": [
       "SessionStorage as an upload cache eliminates the results-page loading flash and handles React Strict Mode cleanly",
       "Async AI via Cloud Tasks (202 + poll) keeps the UI responsive and avoids Cloud Run request timeouts",
-      "Build-time `NEXT_PUBLIC_*` injection is required for Next.js standalone output on Cloud Run — runtime env alone is not enough"
+      "Build-time `NEXT_PUBLIC_*` injection is required for Next.js standalone output on Cloud Run. Runtime env alone is not enough"
     ],
     "metrics": [
       {
@@ -204,13 +204,13 @@
     ],
     "demonstrates": [
       "Drag-and-drop upload for CSV, XLSX, and JSON with instant statistical profiling",
-      "Data quality scoring with S–F grades and component breakdown (completeness, uniqueness, consistency)",
-      "AI insights — executive summaries, ML recommendations, and prioritized findings with quality alerts",
+      "Data quality scoring with S-F grades and component breakdown (completeness, uniqueness, consistency)",
+      "AI insights: executive summaries, ML recommendations, and prioritized findings with quality alerts",
       "Auto-generated smart charts (bar, line, pie, scatter) on a responsive dashboard grid",
-      "Conversational data exploration — floating chat with suggested questions and multi-turn history",
-      "Multi-channel auth — email/password, Google, GitHub, magic link, and QR-code mobile login",
+      "Conversational data exploration: floating chat with suggested questions and multi-turn history",
+      "Multi-channel auth: email/password, Google, GitHub, magic link, and QR-code mobile login",
       "Saved analyses with search, favorites, public/private toggle, and shareable links",
-      "Freemium credit model — Anonymous, Free, Paid, and Enterprise tiers with usage tracking"
+      "Freemium credit model: Anonymous, Free, Paid, and Enterprise tiers with usage tracking"
     ],
     "decisions": [],
     "tradeoffs": "",
@@ -226,7 +226,7 @@
     "type": "personal_project",
     "title": "PassaNota",
     "domain": "FinTech / Expense Management",
-    "summary": "PassaNota is a B2B expense-control platform for Brazilian businesses. Teams photograph fiscal receipts on desktop or paired mobile devices; a vision LLM pipeline extracts structured data — vendor, line items, totals, and dates — without manual entry. Managers get dashboards with spend trends, category breakdowns, and top products, while operators capture receipts in the field. The system supports multi-company tenancy, role-based access, and platform-level admin tooling, deployed on GCP Cloud Run with Supabase auth and service-to-service IAM between frontend and API.",
+    "summary": "PassaNota is a B2B expense-control platform for Brazilian businesses. Teams photograph fiscal receipts on desktop or paired mobile devices; a vision LLM pipeline extracts structured data (vendor, line items, totals, and dates) without manual entry. Managers get dashboards with spend trends, category breakdowns, and top products, while operators capture receipts in the field. The system supports multi-company tenancy, role-based access, and platform-level admin tooling, deployed on GCP Cloud Run with Supabase auth and service-to-service IAM between frontend and API.",
     "slug": "/projects/passanota",
     "technologies": [
       "Next.js 16",
@@ -279,17 +279,17 @@
       "computer-vision-analytics"
     ],
     "tagline": "Every receipt recorded. Every expense under control.",
-    "context": "PassaNota is a B2B expense-control platform for Brazilian businesses. Teams photograph fiscal receipts on desktop or paired mobile devices; a vision LLM pipeline extracts structured data — vendor, line items, totals, and dates — without manual entry. Managers get dashboards with spend trends, category breakdowns, and top products, while operators capture receipts in the field. The system supports multi-company tenancy, role-based access, and platform-level admin tooling, deployed on GCP Cloud Run with Supabase auth and service-to-service IAM between frontend and API.",
+    "context": "PassaNota is a B2B expense-control platform for Brazilian businesses. Teams photograph fiscal receipts on desktop or paired mobile devices; a vision LLM pipeline extracts structured data (vendor, line items, totals, and dates) without manual entry. Managers get dashboards with spend trends, category breakdowns, and top products, while operators capture receipts in the field. The system supports multi-company tenancy, role-based access, and platform-level admin tooling, deployed on GCP Cloud Run with Supabase auth and service-to-service IAM between frontend and API.",
     "challenges": [
-      "End-to-end AI receipt pipeline — OpenCV document preprocessing plus multi-provider vision LLM extraction",
-      "Production BFF architecture — Next.js proxy with Cloud Run IAM, Supabase JWT forwarding, and multi-tenant headers",
-      "Multi-tenant SaaS design — gestor/operador roles, QR + PIN device pairing, platform admin overview",
-      "Split architecture — Next.js frontend (`passanota-web`) and FastAPI backend (`passanota-api`) on GCP"
+      "End-to-end AI receipt pipeline: OpenCV document preprocessing plus multi-provider vision LLM extraction",
+      "Production BFF architecture: Next.js proxy with Cloud Run IAM, Supabase JWT forwarding, and multi-tenant headers",
+      "Multi-tenant SaaS design: gestor/operador roles, QR + PIN device pairing, platform admin overview",
+      "Split architecture: Next.js frontend (`passanota-web`) and FastAPI backend (`passanota-api`) on GCP"
     ],
     "learnings": [
-      "Vision LLMs handle messy thermal receipts better than template OCR — preprocessing with OpenCV still matters for extraction quality",
+      "Vision LLMs handle messy thermal receipts better than template OCR. Preprocessing with OpenCV still matters for extraction quality",
       "A BFF layer with Cloud Run IAM is the cleanest way to keep the API private while forwarding Supabase user context",
-      "Hybrid categorization — LLM first pass plus SQL keyword/embedding refinement — keeps taxonomy consistent across tenants"
+      "Hybrid categorization (LLM first pass plus SQL keyword/embedding refinement) keeps taxonomy consistent across tenants"
     ],
     "metrics": [
       {
@@ -312,7 +312,7 @@
     "demonstrates": [
       "AI-powered receipt capture via file upload or live camera with document detection",
       "Async background processing with capture status tracking via Cloud Tasks",
-      "Spend dashboard — totals, average ticket, period comparison, category and emitter charts",
+      "Spend dashboard: totals, average ticket, period comparison, category and emitter charts",
       "Paginated invoice list with detailed line-item views and AI confidence badges",
       "Manual item editing and categorization when extraction needs correction",
       "Semantic product search over invoice line items using pgvector embeddings",
@@ -333,7 +333,7 @@
     "type": "personal_project",
     "title": "Quark",
     "domain": "Artificial Life & Simulation",
-    "summary": "Quark is an interactive artificial life simulation where creatures survive with small neural networks and genetic algorithms — no scripted behaviors, no pathfinding, no hand-tuned AI. Each agent starts with a randomly initialized feed-forward network and zero knowledge of its environment. Over generations, successful agents reproduce and pass mutated brains and physical traits to offspring. You can watch evolution in real time, tweak parameters, inspect any creature's brain live, and compare stats across generations.",
+    "summary": "Quark is an interactive artificial life simulation where creatures survive with small neural networks and genetic algorithms. No scripted behaviors, no pathfinding, no hand-tuned AI. Each agent starts with a randomly initialized feed-forward network and zero knowledge of its environment. Over generations, successful agents reproduce and pass mutated brains and physical traits to offspring. You can watch evolution in real time, tweak parameters, inspect any creature's brain live, and compare stats across generations.",
     "slug": "/projects/quark",
     "technologies": [
       "Next.js 16",
@@ -374,15 +374,15 @@
       "computer-vision-analytics"
     ],
     "tagline": "From simple rules emerges intelligence.",
-    "context": "Quark is an interactive artificial life simulation where creatures survive with small neural networks and genetic algorithms — no scripted behaviors, no pathfinding, no hand-tuned AI. Each agent starts with a randomly initialized feed-forward network and zero knowledge of its environment. Over generations, successful agents reproduce and pass mutated brains and physical traits to offspring. You can watch evolution in real time, tweak parameters, inspect any creature's brain live, and compare stats across generations.",
+    "context": "Quark is an interactive artificial life simulation where creatures survive with small neural networks and genetic algorithms. No scripted behaviors, no pathfinding, no hand-tuned AI. Each agent starts with a randomly initialized feed-forward network and zero knowledge of its environment. Over generations, successful agents reproduce and pass mutated brains and physical traits to offspring. You can watch evolution in real time, tweak parameters, inspect any creature's brain live, and compare stats across generations.",
     "challenges": [
-      "Emergent AI without ML libraries — neural network, genetic algorithm, and evolution loop built from scratch in TypeScript",
-      "Dual simulation paradigms — continuous ecosystem mode and controlled generational experiments",
-      "Rich interactive UX — real-time brain inspection, 3D adaptive trait space, and generational charts",
-      "Production engineering — Turborepo monorepo, Docker standalone build, GCP Cloud Run CI/CD"
+      "Emergent AI without ML libraries: neural network, genetic algorithm, and evolution loop built from scratch in TypeScript",
+      "Dual simulation paradigms: continuous ecosystem mode and controlled generational experiments",
+      "Rich interactive UX: real-time brain inspection, 3D adaptive trait space, and generational charts",
+      "Production engineering: Turborepo monorepo, Docker standalone build, GCP Cloud Run CI/CD"
     ],
     "learnings": [
-      "Fitness design shapes emergent behavior more than network size — small networks produce surprisingly complex strategies",
+      "Fitness design shapes emergent behavior more than network size. Small networks produce surprisingly complex strategies",
       "Lab sliders as evolutionary ceilings keep the UX understandable while still allowing open-ended evolution",
       "Decoupling PixiJS rendering from React state was essential for smooth simulation at higher population counts"
     ],
@@ -406,17 +406,17 @@
     ],
     "demonstrates": [
       "Neuroevolution with custom MLP (14 → 8 → 4) and sigmoid activations",
-      "Genetic algorithm — tournament selection, crossover, mutation, and elitism",
-      "Evolving DNA traits — vision, speed, metabolism, predation drive, toxin resistance",
+      "Genetic algorithm: tournament selection, crossover, mutation, and elitism",
+      "Evolving DNA traits: vision, speed, metabolism, predation drive, toxin resistance",
       "Ecosystem and generational simulation modes with predation dynamics",
-      "Seven preset scenarios plus randomize — from garden ecosystems to harsh selection",
-      "Climate system — humidity, temperature, rainfall, drought, and growth modifiers",
-      "Brain inspector — React Flow visualization with live inputs, outputs, and activations",
-      "Adaptive Space — Three.js scatter of perception × biomechanics × metabolism"
+      "Seven preset scenarios plus randomize, from garden ecosystems to harsh selection",
+      "Climate system: humidity, temperature, rainfall, drought, and growth modifiers",
+      "Brain inspector: React Flow visualization with live inputs, outputs, and activations",
+      "Adaptive Space: Three.js scatter of perception × biomechanics × metabolism"
     ],
     "decisions": [],
     "tradeoffs": "",
-    "implementation": "The simulation engine lives in a pure TypeScript monorepo (`apps/web/engine/`): world tick loop, collision, sensing, predation, climate, and vegetation in a ~2000-line world module. PixiJS handles 60fps canvas rendering decoupled from React; Zustand syncs world snapshots via a requestAnimationFrame game loop with configurable simulation speed (0.25×–4×). The app ships as a Next.js standalone Docker image deployed to GCP Cloud Run.",
+    "implementation": "The simulation engine lives in a pure TypeScript monorepo (`apps/web/engine/`): world tick loop, collision, sensing, predation, climate, and vegetation in a ~2000-line world module. PixiJS handles 60fps canvas rendering decoupled from React; Zustand syncs world snapshots via a requestAnimationFrame game loop with configurable simulation speed (0.25× to 4×). The app ships as a Next.js standalone Docker image deployed to GCP Cloud Run.",
     "narrative": [],
     "interaction_prompt": "",
     "demo_url": "https://quark.caldasdev.com.br/",
