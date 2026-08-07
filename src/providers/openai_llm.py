@@ -5,7 +5,6 @@ from __future__ import annotations
 import copy
 import json
 import logging
-from functools import cached_property
 from typing import Any, AsyncGenerator, Literal
 
 from google.adk.models.base_llm import BaseLlm
