@@ -172,7 +172,7 @@ gcloud builds submit --config cloudbuild.yaml .
 
 # Configurar variáveis de ambiente após deploy
 gcloud run services update portfolio-agent \
-  --set-env-vars LLM_PROVIDER=gemini \
+  --set-env-vars LLM_MODEL=gemini:gemini-3.5-flash \
   --region southamerica-east1
 ```
 
@@ -186,9 +186,10 @@ Veja `.env.example` para a lista completa. Principais:
 
 | Variável | Padrão | Descrição |
 |----------|--------|-----------|
-| `LLM_PROVIDER` | `gemini` | Provedor de LLM: `gemini` ou `openai` |
+| `LLM_MODEL` | `openai:gpt-5.6-luna` | Modelo preferido (`provider:model_id`). Fallbacks no código (`src/providers/registry.py`) |
 | `PORTFOLIO_AGENT_GEMINI_API_KEY` | - | Chave API Google Gemini |
 | `PORTFOLIO_AGENT_OPENAI_API_KEY` | - | Chave API OpenAI |
+| `PORTFOLIO_AGENT_OPENAI_BASE_URL` | `https://api.openai.com/v1` | Base URL OpenAI (opcional) |
 | `APP_VERSION` | `0.1.0` | Versão da aplicação |
 | `DEBUG` | `false` | Modo debug (use `true` em dev) |
 | `CORS_ORIGINS` | `["http://localhost:3000"]` | Origens permitidas para CORS |
@@ -215,7 +216,7 @@ Retorna status do serviço, versão, tamanho do catálogo e estado do LLM.
   "catalog_size": 42,
   "projects": 30,
   "labs": 12,
-  "provider": "gemini",
+  "llm_model": "openai:gpt-5.6-luna",
   "llm_configured": true
 }
 ```
@@ -234,7 +235,7 @@ Veja documentação interativa em: `/docs` (Swagger UI)
 - **`src/api/`**: Rotas FastAPI (controllers)
 - **`src/domain/`**: Lógica de negócio e modelos
 - **`src/knowledge_base/`**: Carregamento e indexação de dados
-- **`src/providers/`**: Abstração de provedores LLM
+- **`src/providers/`**: Contratos LLM, adapters OpenAI/Gemini e router de fallback
 - **`src/session/`**: Gerenciamento de conversas
 - **`src/tools/`**: Ferramentas customizadas do agente
 
