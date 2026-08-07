@@ -14,7 +14,7 @@ substitutions:
 
   # Secrets
   _SECRET_GEMINI_API_KEY: portfolio-gemini-api-key
-  _SECRET_OPENAI_API_KEY: portfolio-agent-openai-api-key
+  _SECRET_OPENAI_API_KEY: portfolio-openai-api-key
 
   # Application
   _LLM_MODEL: openai:gpt-5.6-luna
