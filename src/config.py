@@ -1,7 +1,5 @@
 """Application configuration loaded from environment variables."""
 
-from typing import Literal
-
 from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -12,21 +10,19 @@ class Settings(BaseSettings):
         extra="ignore",
         populate_by_name=True,
         case_sensitive=False,
-        env_prefix="PORTFOLIO_AGENT_"
+        env_prefix="PORTFOLIO_AGENT_",
     )
 
-    # LLM provider selection (LLM_PROVIDER has no PORTFOLIO_AGENT_ prefix in .env)
-    llm_provider: Literal["gemini", "openai"] = Field(
-        default="gemini",
-        validation_alias=AliasChoices("LLM_PROVIDER", "PORTFOLIO_AGENT_LLM_PROVIDER"),
+    # Preferred model: provider:model_id (fallbacks live in providers/registry.py)
+    llm_model: str = Field(
+        default="openai:gpt-5.6-luna",
+        validation_alias=AliasChoices("LLM_MODEL", "PORTFOLIO_AGENT_LLM_MODEL"),
     )
 
     openai_api_key: str = Field(default="")
-    openai_model: str = Field(default="gpt-4.1-mini")
     openai_base_url: str = Field(default="https://api.openai.com/v1")
 
     gemini_api_key: str = Field(default="")
-    gemini_model: str = Field(default="gemini-2.0-flash")
 
     # App
     app_name: str = "portfolio-agent"
@@ -66,5 +62,6 @@ class Settings(BaseSettings):
         ),
     )
     default_user_id: str = "portfolio-visitor"
+
 
 settings = Settings()

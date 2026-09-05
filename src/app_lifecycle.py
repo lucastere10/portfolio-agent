@@ -29,8 +29,9 @@ async def bootstrap_agent(app) -> None:
         if not settings.debug and not has_llm_credentials():
             raise RuntimeError(
                 "LLM credentials are required in production "
-                f"(provider={settings.llm_provider}). "
-                "Set PORTFOLIO_AGENT_GEMINI_API_KEY via Secret Manager."
+                f"(llm_model={settings.llm_model}). "
+                "Set PORTFOLIO_AGENT_OPENAI_API_KEY and/or "
+                "PORTFOLIO_AGENT_GEMINI_API_KEY via Secret Manager."
             )
 
         catalog = load_catalog()
@@ -62,7 +63,7 @@ async def bootstrap_agent(app) -> None:
 
         init_runner()
         app.state.agent_ready = True
-        logger.info("Portfolio Agent ready (provider=%s)", settings.llm_provider)
+        logger.info("Portfolio Agent ready (llm_model=%s)", settings.llm_model)
     except Exception as exc:
         app.state.agent_startup_error = str(exc)
         logger.exception("Portfolio Agent startup failed: %s", exc)

@@ -78,7 +78,7 @@
       },
       {
         "title": "BigQuery as the primary analytical data source",
-        "reasoning": "Eliminates the need for a separate cache layer — the agent queries BigQuery directly via generated SQL, with paginated results to fit within context."
+        "reasoning": "Eliminates the need for a separate cache layer. The agent queries BigQuery directly via generated SQL, with paginated results to fit within context."
       }
     ],
     "tradeoffs": "MCP Toolbox adds an indirection layer that increases latency by ~200ms per tool call. Acceptable for conversational use cases, but not for high-frequency pipelines.",
@@ -94,7 +94,7 @@
     "type": "project",
     "title": "AI Delivery Workspace",
     "domain": "AI Agents",
-    "summary": "SPA that operationalizes delivery methodology — projects, iterations, versioned artifacts, and async AI document pipelines with dependency-aware generation and in-browser editing.",
+    "summary": "SPA that operationalizes delivery methodology: projects, iterations, versioned artifacts, and async AI document pipelines with dependency-aware generation and in-browser editing.",
     "slug": "/work/ai-delivery-workspace",
     "technologies": [
       "TypeScript",
@@ -130,7 +130,7 @@
       "drop"
     ],
     "tagline": "Methodology-driven project workspace with AI-assisted document generation",
-    "context": "The team needed a workspace to run software-delivery methodology end to end — manage projects and iterations, collect input artifacts, generate PRDs and downstream deliverables with AI assistance, track approval status, and edit or compare document versions without leaving the browser.",
+    "context": "The team needed a workspace to run software-delivery methodology end to end: manage projects and iterations, collect input artifacts, generate PRDs and downstream deliverables with AI assistance, track approval status, and edit or compare document versions without leaving the browser.",
     "challenges": [
       "Orchestrating long-running document generation without blocking the UI",
       "Enforcing dependency order between document types so generation quality does not degrade",
@@ -152,7 +152,7 @@
     "decisions": [
       {
         "title": "BaaS for CRUD and file storage, automation platform for AI generation",
-        "reasoning": "Edge functions and object storage handle projects, iterations, and artifact files. Document generation posts structured payloads to automation webhooks that read from storage and write results back — keeping the SPA thin and pipelines swappable."
+        "reasoning": "Edge functions and object storage handle projects, iterations, and artifact files. Document generation posts structured payloads to automation webhooks that read from storage and write results back, keeping the SPA thin and pipelines swappable."
       },
       {
         "title": "Artifact dependency matrix before generation",
@@ -167,7 +167,7 @@
         "reasoning": "Long workflows cannot return synchronously. A generation context plus polling refreshes artifact status lists until processing completes or fails."
       }
     ],
-    "tradeoffs": "Coupling to external automation workflows means pipeline changes can break the SPA contract — mitigated with typed payloads and env-specific webhook bases. Polling is simpler than websockets but adds request noise on long jobs. Embedding an OIDC client secret in a SPA is a security smell; password-grant convenience traded for a weaker public-client model that should move to a proper public OIDC flow.",
+    "tradeoffs": "Coupling to external automation workflows means pipeline changes can break the SPA contract. That is mitigated with typed payloads and env-specific webhook bases. Polling is simpler than websockets but adds request noise on long jobs. Embedding an OIDC client secret in a SPA is a security smell; password-grant convenience traded for a weaker public-client model that should move to a proper public OIDC flow.",
     "implementation": "React/Vite SPA with protected routes, project tables, ideation workspace, drag-drop uploads to object storage, TipTap and hierarchical backlog editors, version compare, and multi-env CI/CD serving via nginx with health probes.",
     "narrative": [],
     "interaction_prompt": "",
@@ -218,17 +218,17 @@
       "astra"
     ],
     "tagline": "Monthly commercial budget split into daily store-category rows with audited calibration",
-    "context": "The team needed to automate monthly multi-store commercial budget planning — turning monthly totals into daily amounts by store and category with fidelity to warehouse conventions, instead of fragile spreadsheet workflows.",
+    "context": "The team needed to automate monthly multi-store commercial budget planning: turning monthly totals into daily amounts by store and category with fidelity to warehouse conventions, instead of fragile spreadsheet workflows.",
     "challenges": [
       "Enforcing accounting identities and signed deduction conventions aligned to the warehouse",
       "Deriving daily share weights from historical revenue when some store-days are closed or missing history",
       "Allowing manual calibration without breaking monthly gross-revenue and profit totals",
-      "Keeping a strict dual-database boundary — read-only warehouse history vs. app persistence for versioned exports"
+      "Keeping a strict dual-database boundary: read-only warehouse history vs. app persistence for versioned exports"
     ],
     "learnings": [
       "Warehouse sign conventions for taxes and cost deductions must be normalized at ingest or identity checks fire false positives",
       "Closed-store days require share renormalization; otherwise daily rows underfill the monthly total",
-      "Chunked persistence is necessary once export payloads hit reverse-proxy body limits — draft abort prevents orphan partial versions"
+      "Chunked persistence is necessary once export payloads hit reverse-proxy body limits. Draft abort prevents orphan partial versions"
     ],
     "metrics": [],
     "demonstrates": [
@@ -255,8 +255,8 @@
         "reasoning": "Large warehouse-shaped exports are persisted in begin/append/finalize steps to avoid proxy size limits, with abort on failure and a current-version flag for history rehydrate."
       }
     ],
-    "tradeoffs": "Output quality depends on warehouse history coverage — thin history falls back to uniform shares and needs more calibration. The multi-step wizard is heavier than a single spreadsheet, but critical validation gates and auditability outweigh the friction.",
-    "implementation": "Full-stack TypeScript app (TanStack Start) with a Zustand-backed wizard — upload, validate, reference mapping, diarization, calibration, holidays, export, and history. Server functions talk to SQL Server for historical shares and MySQL for versioned exports via dbmate migrations. Docker image deployed to Kubernetes through a CI pipeline.",
+    "tradeoffs": "Output quality depends on warehouse history coverage. Thin history falls back to uniform shares and needs more calibration. The multi-step wizard is heavier than a single spreadsheet, but critical validation gates and auditability outweigh the friction.",
+    "implementation": "Full-stack TypeScript app (TanStack Start) with a Zustand-backed wizard: upload, validate, reference mapping, diarization, calibration, holidays, export, and history. Server functions talk to SQL Server for historical shares and MySQL for versioned exports via dbmate migrations. Docker image deployed to Kubernetes through a CI pipeline.",
     "narrative": [],
     "interaction_prompt": "",
     "demo_url": "",
@@ -305,7 +305,7 @@
     ],
     "learnings": [
       "Calibrating the entry/exit counting line requires on-site testing in the physical space",
-      "Lighting varies greatly throughout the day — histogram normalization improves detection consistency"
+      "Lighting varies greatly throughout the day. Histogram normalization improves detection consistency"
     ],
     "metrics": [],
     "demonstrates": [
@@ -335,7 +335,7 @@
     "type": "project",
     "title": "GPOS Payment System",
     "domain": "Payment Systems",
-    "summary": "Complete .NET/C# payment system with PIX, cards, mTLS, and remote terminal registration — eliminating the need to ship physical devices.",
+    "summary": "Complete .NET/C# payment system with PIX, cards, mTLS, and remote terminal registration, eliminating the need to ship physical devices.",
     "slug": "/work/gpos-payment-system",
     "technologies": [
       ".NET",
@@ -371,9 +371,9 @@
       "Maintaining transactional consistency in unstable connection scenarios on terminals"
     ],
     "learnings": [
-      "BACEN's PIX documentation is extensive but precise — following it exactly avoids rejections during integration",
+      "BACEN's PIX documentation is extensive but precise. Following it exactly avoids rejections during integration",
       "Implementing a circuit breaker on PSP calls prevents cascade failures during bank unavailability",
-      "Immutable transaction logs are mandatory for auditing — never UPDATE payment records"
+      "Immutable transaction logs are mandatory for auditing. Never UPDATE payment records"
     ],
     "metrics": [
       {
@@ -421,7 +421,7 @@
     "type": "project",
     "title": "Payment Integration Platform",
     "domain": "Payment Systems",
-    "summary": "Full Stripe integration — webhooks, automated checkout, subscription management, and failed payment recovery.",
+    "summary": "Full Stripe integration: webhooks, automated checkout, subscription management, and failed payment recovery.",
     "slug": "/work/payment-integration-platform",
     "technologies": [
       "Python",
@@ -543,7 +543,7 @@
       "Admin panel with complete CRUDs without a pre-made admin framework"
     ],
     "learnings": [
-      "Never store tokens in plain text — even activation tokens must be hashed",
+      "Never store tokens in plain text. Even activation tokens must be hashed",
       "Audit log in a separate table for each permission mutation is essential for support"
     ],
     "metrics": [],
@@ -610,7 +610,7 @@
       "Supporting dynamic templates without requiring a deployment for each content change"
     ],
     "learnings": [
-      "Dead letter queue is essential — without it, failed emails are silently lost",
+      "Dead letter queue is essential. Without it, failed emails are silently lost",
       "Rate limiting on the consumer prevents SMTP provider bans from burst sending"
     ],
     "metrics": [],

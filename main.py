@@ -88,7 +88,7 @@ async def health():
         "catalog_size": len(catalog),
         "projects": indexes.project_count,
         "labs": indexes.lab_count,
-        "provider": settings.llm_provider,
+        "llm_model": settings.llm_model,
         "llm_configured": llm_configured,
     }
     if not llm_configured:

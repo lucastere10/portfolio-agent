@@ -14,10 +14,10 @@ substitutions:
 
   # Secrets
   _SECRET_GEMINI_API_KEY: portfolio-gemini-api-key
+  _SECRET_OPENAI_API_KEY: portfolio-openai-api-key
 
   # Application
-  _LLM_PROVIDER: gemini
-  _PORTFOLIO_AGENT_GEMINI_MODEL: gemini-2.5-flash
+  _LLM_MODEL: openai:gpt-5.6-luna
   _PORTFOLIO_WEB_BASE_URL: https://portfolio.caldasdev.com.br
   _APP_VERSION: 0.1.0
   _DEBUG: "false"
@@ -32,6 +32,7 @@ steps:
     args:
       - scripts/cloudbuild/validate-secrets.sh
       - ${_SECRET_GEMINI_API_KEY}
+      - ${_SECRET_OPENAI_API_KEY}
 
   - id: Build
     name: gcr.io/cloud-builders/docker
@@ -75,8 +76,7 @@ steps:
       - --revision-suffix=${SHORT_SHA}
       - --labels=app=${_LABEL_APP},env=${_LABEL_ENV},owner=${_LABEL_OWNER}
       - --execution-environment=gen2
-      - --set-env-vars=LLM_PROVIDER=${_LLM_PROVIDER}
-      - --set-env-vars=PORTFOLIO_AGENT_GEMINI_MODEL=${_PORTFOLIO_AGENT_GEMINI_MODEL}
+      - --set-env-vars=LLM_MODEL=${_LLM_MODEL}
       - --set-env-vars=APP_VERSION=${_APP_VERSION}
       - --set-env-vars=DEBUG=${_DEBUG}
       - --set-env-vars=SESSION_TTL_SECONDS=${_SESSION_TTL_SECONDS}
@@ -84,6 +84,7 @@ steps:
       - --set-env-vars=PORTFOLIO_WEB_BASE_URL=${_PORTFOLIO_WEB_BASE_URL}
       - --set-env-vars=CORS_ORIGINS=${_CORS_ORIGINS}
       - "--set-secrets=PORTFOLIO_AGENT_GEMINI_API_KEY=${_SECRET_GEMINI_API_KEY}:latest"
+      - "--set-secrets=PORTFOLIO_AGENT_OPENAI_API_KEY=${_SECRET_OPENAI_API_KEY}:latest"
 
   - id: grant-web-invoker
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
